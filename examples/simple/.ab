@@ -1,0 +1,78 @@
+#!/bin/bash
+# [必填] 项目名称，同时也是镜像名称
+app_name=simple
+
+# [必填] 镜像版本，版本号的格式为 X.Y.Z(又称 Major.Minor.Patch)，X 表示主版本号，当 API 的兼容性变化时，X 需递增。Y 表示次版本号，当增加功能时(不影响 API 的兼容性)，Y 需递增。Z 表示修订号，当做 Bug 修复时(不影响 API 的兼容性)，Z 需递增。
+app_version=0.0.1
+
+# [必填] 部署serverless时用要用到的命名空间，建议按照业务划分命名空间
+sl_namespace=Default
+
+# [必填] 镜像仓库的地址
+acr_address=registry.<your-region>.aliyuncs.com
+
+# [必填] 镜像仓库的namespace
+acr_namespace=<your-docker-namespace>
+
+# [必填] 在容器内部，应用的日志绝对路径
+log_path=/root/app/logs
+
+# [必填] 你的远端oss bukect名称。上传下载命令，会自动把指定的文件同步到这个bucket下。部署时，也会从这个bucket下自动挂载文件。
+oss_bucket=<your-oss-bucket>
+
+# [必填] 部署到SAE时的vpc，交换机，slb，安全组信息
+vpc=<your-SAE-vpc-id>
+vsw=<your-vswitch-id>
+slb=<your-slb-id>
+sg=<your-security-group-id>
+slb_ip=<your-slb-ip>
+
+# ================================================
+# ================================================
+# ============= 以下为选填内容 ======================
+# ================================================
+# ================================================
+
+# 为什么没有配置oss的endpoint？因为我们用ossutil对oss操作，oss的endpoint需要配置到ossutil的config中。
+
+# [选填] 你的应用所在的地域（region），这个值对应阿里云SAE服务的region，默认值: cn-hangzhou
+sl_region_id=cn-hangzhou
+
+# [选填] 部署的实例数。默认值：1, 最大10
+sl_replicas=1
+
+# [选填] 每个实例所需的CPU，单位为毫核，不能为0，默认值2000。目前仅支持以下固定规格：500，1000，2000，4000，8000
+cpu=2000
+# [选填]每个实例所需的内存，单位为MB，不能为0。与CPU为一一对应关系，目前仅支持以下固定规格：
+# 1024：对应CPU为500毫核。
+# 2048：对应CPU为500和1000毫核。
+# 4096：对应CPU为1000和2000毫核。
+# 8192：对应CPU为2000和4000毫核。
+# 16384：对应CPU为4000和8000毫核。
+memory=4096
+
+
+# [选填] 容器和OSS文件挂载配置。
+# 使用场景：算法需要部署在公网上测试，模型等大文件不想打包进容器，所以可以先在.dockerignore里添加ignore，再通过abt file命令将大文件上传到oss上。部署时，实现自动挂载。
+# 使用该功能前，需要通过file命令将文件上传到oss上。
+#  mountPath:容器内的绝对路径
+#  bucketPath:OSS路径，(不包含bucket名称)
+#  例：将OSS中 abt/abtdemo/config 文件夹挂载到容器中的 /root/app/config
+#  /root/app/config:abt/abtdemo/config/  (如果是目录，最后的这个斜杠不能少。如果是文件，OSS路径最后不需要斜杠)
+# 注意：如果需要挂载加密文件，需要手动先把加密文件上传到oss
+data[1]=/root/app/resource/mydata:simple/resource/mydata
+data[2]=/root/app/resource/sub:simple/resource/sub/
+
+
+# [选填] 需要加密的数据文件列表,支持正则表达式
+enable_crypto=false
+crypto[0]=resource
+crypto[1]=resource/.*data
+
+# [选填] 需要加密的python文件, 你可以指定include和exclude的文件，支持正则表达式
+enable_encrypt_python=false
+encrypt_python_include[0]=.*
+encrypt_python_exclude[0]=config/config.*.py
+encrypt_python_exclude[1]=setup
+
+

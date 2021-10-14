@@ -1,0 +1,11 @@
+/root/app/logs/*.log{
+    copytruncate
+	daily
+	missingok
+	rotate 30
+	nocompress
+	create 640 root root
+	dateext
+	dateformat -%Y%m%d
+	sharedscripts
+}

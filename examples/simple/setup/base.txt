@@ -1,0 +1,3 @@
+git+https://github.com/aliyun/algorithm-base.git
+pymysql==0.10.1
+py_eureka_client==0.7.4

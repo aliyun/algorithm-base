@@ -1,0 +1,16 @@
+*.pyc
+__pycache__
+config/config.py
+.DS_Store
+.ipy*
+.vscode/
+glogs/
+.idea/
+.eggs/
+.tox/
+dist/
+venv/
+ab.egg-info/
+src/ab/spark_jars/
+derby.log
+examples/simple/resource
