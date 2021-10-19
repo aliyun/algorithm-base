@@ -72,12 +72,6 @@ docker run -p xxxx:80 your-image
 sh build.sh
 ```
 
-构建指定名称，版本的镜像,在算法项目的根目录下执行
-
-```
-sh build.sh -n your-image-name -v your-image-version
-```
-
 默认使用python3.7版本，如果必须使用其他python版本，请修改DOCKERFILE中的基础镜像，如
 FROM registry.cn-hangzhou.aliyuncs.com/medical-care/ab-base-36:latest
 

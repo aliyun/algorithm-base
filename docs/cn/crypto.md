@@ -35,7 +35,7 @@ enable_encrypt_python=true
 在python中，使用如下方式读取该文件。打包后，镜像中的文件会被自动加密，并删除明文文件。同时，`read_text` 将把密文解密到内存中。
 
 ```
-from ab.keys.crypto import read_text
+from ab.keys.data import read_text
 
 @algorithm()
 def crypto():

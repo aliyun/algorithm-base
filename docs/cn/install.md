@@ -1,6 +1,18 @@
 
 # 安装
 
+## 安装之前
+
+强烈建议国内用户更改pip源，以加速安装速度 `~/.pip/pip.conf`
+
+```
+[global]
+timeout = 6000
+index-url = http://mirrors.aliyun.com/pypi/simple/
+trusted-host = mirrors.aliyun.com
+```
+
+
 ## 使用源代码安装(推荐)
 - 先clone AB框架源代码
 

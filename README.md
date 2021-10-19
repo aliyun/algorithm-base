@@ -48,7 +48,7 @@ pyab
 curl --location --request POST 'localhost:8000/api/algorithm/add' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "args": {"a": 1, "b": 2}
+	"args": {"a": 1, "b": 2}
 }'
 ```
 
@@ -108,6 +108,7 @@ The SLB binding succeeded, Access path http://somehost:someport,
   - [更多的功能](docs/cn/features.md)
 - [插件机制](docs/cn/plugin.md)
 - 最佳实践
+  - [如何创建新项目](docs/cn/new-project.md)
   - [最佳实践](docs/cn/best-practice.md)
 
 ## 视频专区

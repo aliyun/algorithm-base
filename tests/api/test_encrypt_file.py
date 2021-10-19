@@ -1,7 +1,8 @@
 import pickle
 
 # from ab.utils.os_util import resource_file_path
-from ab.keys.crypto import open_text, open_binary, read_text, read_pickle, ab_encryptFile
+from ab.keys.crypto import ab_encryptFile
+from ab.keys.data import open_text, open_binary, read_text, read_pickle
 
 input_pickle = "resources/pickle_example"
 input_text_common = "resources/text_common"

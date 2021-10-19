@@ -634,9 +634,13 @@ def deploy(args: dict) -> bool:
     app = get_application(get_app_name(args), sl_namespace_info)
     request = SaeRequest()
     if app is not None:
-        usr_input = input("The application [{}] already exists. Do you want to delete the original application and "
-                          "deploy the new application? (yes/no)".format(app_name))
-        if str(usr_input).strip().lower() == "yes" or str(usr_input).strip().lower() == "y":
+        if args.get(" -f ") == "true":
+            delete_app = "yes"
+        else:
+            delete_app = input(
+                "The application [{}] already exists. Do you want to delete the original application and "
+                "deploy the new application? (yes/no)".format(app_name))
+        if str(delete_app).strip().lower() == "yes" or str(delete_app).strip().lower() == "y":
             logger.info("Deleting the application, Please wait...")
 
             result, change_id = delete_application(request, app)

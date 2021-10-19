@@ -35,6 +35,8 @@ def add_deploy_command(parsers, cmd_name, msg):
     cmd.add_argument("-o", "--only", action="store", nargs="?", default=False, help="only the current step")
     cmd.add_argument("-c", "--use-cache", action="store", nargs="?", default=True, help="whether to use cache when "
                                                                                         "docker build")
+    cmd.add_argument("-f", "--force", action="store", nargs="?", default=False, help="whether to overwrite deployed "
+                                                                                     "applications when abt deploy")
     cmd.set_defaults(func=abt.cli, operate=cmd_name)
 
 

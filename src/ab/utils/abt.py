@@ -152,6 +152,7 @@ def build_params(args):
     params[" -s "] = str(args.skiptest).strip().lower()
     params[" -o "] = str(args.only).strip().lower()
     params[" -c "] = str(args.use_cache).strip().lower()
+    params[" -f "] = str(args.force).strip().lower()
     params[" -u "] = abt.get_value("docker_registry_username")
     params[" -p "] = abt.get_value("docker_registry_password")
     return params

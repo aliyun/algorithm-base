@@ -3,7 +3,7 @@
 app_name=simple
 
 # [必填] 镜像版本，版本号的格式为 X.Y.Z(又称 Major.Minor.Patch)，X 表示主版本号，当 API 的兼容性变化时，X 需递增。Y 表示次版本号，当增加功能时(不影响 API 的兼容性)，Y 需递增。Z 表示修订号，当做 Bug 修复时(不影响 API 的兼容性)，Z 需递增。
-app_version=0.0.1
+app_version=0.0.2
 
 # [必填] 部署serverless时用要用到的命名空间，建议按照业务划分命名空间
 sl_namespace=Default

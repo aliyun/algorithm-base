@@ -1,5 +1,23 @@
 # ABT 使用示例
 
+## 简易部署脚本使用方法
+
+使用前提：按照`ABT 参考`章节，完成配置`全局配置`与`项目配置`。不用怕，事实上你需要改写的配置非常少。
+
+在项目根目录下，执行如下命令，可以将项目打包，推送到镜像仓库。  
+
+```
+sh build.sh
+```
+
+如果希望提速docker构建，可以开启docker构建缓存。
+
+```
+sh build.sh -c=true
+```
+
+
+## abt工具命令展示
 在运行以下示例命令前，请完成`ABT 参考`中的全局配置和项目配置,命令详见见下方参考
 
 - 执行项目下的全部测试用例
@@ -215,12 +233,13 @@ abt test|build|push|deploy [OPTIONS]
 
 **公共参数**
 
-- n, --name <NAME> 指定镜像的名字，默认从meta中获取
-- v, --version <VALUE> 指定镜像的版本号，默认从meta中获取
-- ns, --namespace <NAME> 指定部署时的命名空间（注意，不是镜像的命名空间）,默认从meta中获取
-- s, --skiptest <false|true> 默认false，是否跳过测试用例。
-- o, --only<false|true>默认false，是否只执行当前步骤。
-- c, --use-cache <false|true> 默认true。此参数决定docker build时是否使用docker cache机制。
+- -n, --name <NAME> 指定镜像的名字，默认从meta中获取
+- -v, --version <VALUE> 指定镜像的版本号，默认从meta中获取
+- -ns, --namespace <NAME> 指定部署时的命名空间（注意，不是镜像的命名空间）,默认从meta中获取
+- -s, --skiptest <false|true> 默认false，是否跳过测试用例。
+- -o, --only<false|true>默认false，是否只执行当前步骤。
+- -c, --use-cache <false|true> 默认true。此参数决定docker build时是否使用docker cache机制。
+- -f, --force <false|true> 默认false。如果设置为true，直接覆盖原有deploy，不进行提示
 
 #### test
 
@@ -248,8 +267,8 @@ abt get [OPTIONS] COMMAND [ARGS]...
 
 **公共参数**
 
-- n, --name <NAME> 指定镜像的名字，默认从meta中获取
-- ns, --namespace <NAME> 指定部署时SAE的命名空间,默认从meta中获取
+- -n, --name <NAME> 指定镜像的名字，默认从meta中获取
+- -ns, --namespace <NAME> 指定部署时SAE的命名空间,默认从meta中获取
 
 #### deploy
 
@@ -261,7 +280,7 @@ abt get [OPTIONS] COMMAND [ARGS]...
 
 参数：
 
-- f, --file-name <NAME> 查看指定oss文件的内容
+- -f, --file-name <NAME> 查看指定oss文件的内容
 
 ### 文件
 
@@ -287,9 +306,9 @@ abt encrypt [OPTIONS]
 
 **公共参数**
 
-- i ,--include 支持正则表达式，包含需要加密的文件，默认值为所有python文件(.*)
-- e, --exclude 支持正则表达式，需要排除的文件。
-- c, --clear 是否删除源文件，默认为false
+- -i ,--include 支持正则表达式，包含需要加密的文件，默认值为所有python文件(.*)
+- -e, --exclude 支持正则表达式，需要排除的文件。
+- -c, --clear 是否删除源文件，默认为false
 
 注意：
 
@@ -304,8 +323,8 @@ abt crypto [OPTIONS]
 
 **公共参数**
 
-- i ,--include 支持正则表达式，包含需要加密的文件，默认值为所有python文件(.*)
-- c, --clear 是否删除源文件，默认为false
+- -i ,--include 支持正则表达式，包含需要加密的文件，默认值为所有python文件(.*)
+- -c, --clear 是否删除源文件，默认为false
 
 注意：
 
