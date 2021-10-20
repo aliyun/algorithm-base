@@ -21,7 +21,7 @@ def read_text(infile, encode="UTF-8"):
     with open_text(infile, encode) as text:
         for t in text:
             frags.append(t)
-    return "".join(frags)
+    return "\n".join(frags)
 
 
 def read_json(infile, encode="UTF-8"):

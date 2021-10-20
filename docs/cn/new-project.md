@@ -22,6 +22,8 @@ find /tmp/hello-world/ -name \*.py -o -name \*.sh -o -name \*.md | xargs grep -l
 
 - 启动服务
 ```
+cd /tmp/hello-world
+
 pyab
 ```
 

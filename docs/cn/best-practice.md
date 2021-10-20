@@ -86,6 +86,13 @@ docker run -it -v $PWD/logs:/root/app/logs -p 8888:80 --restart=always your-imag
 
 ## 如何调试问题镜像
 - 下面的命令，可以帮助你不启动gunicorn服务，直接进入容器
+
+```
+docker run -it --entrypoint bash <your-image> 
+```
+
+或
+
 ```
 docker run -it your-image debug
 ```
