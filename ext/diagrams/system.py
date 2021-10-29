@@ -30,7 +30,7 @@ with Diagram("AB Framework", show=False):
 
     with Cluster("data source"):
         datasource = Mysql("mysql")
-        datasource - Redis("redsi") - Hive("hive")
+        datasource - Redis("redis") - Hive("hive")
 
     with Cluster("engine"):
         engine = Python("python")

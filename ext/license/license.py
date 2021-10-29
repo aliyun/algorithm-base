@@ -11,8 +11,8 @@ def step1(input_line):
 
 
 # enc + md5
-def step2(input_line):
-    m = hashlib.md5()
+def step2(input_line, salt):
+    m = hashlib.md5(salt)
     m.update(step1(input_line).encode('utf-8'))
     return m.hexdigest()
 
@@ -44,23 +44,28 @@ def license_create(path, days):
         # enddate
         enddate = datetime.strftime(datetime.today() + timedelta(days=int(days)), '%Y-%m-%d')
         t = "to:{}".format(enddate)
-        l = step1(t)
-        l = l + "\n"
+        expiry_date = step1(t)
+        salt = bytes(expiry_date, encoding="utf8")
+        expiry_date = expiry_date + "\n"
+        l = step2("v1", salt) + "\n"
         of.write(l)
         result = result + l
-
+        of.write(expiry_date)
+        result = result + expiry_date
+        flag = False
         with open(path) as f:
             for num, line in enumerate(f, 1):
-                # only need if the num from [2,8], total 7 lines
-                if 2 <= num <= 8:
-                    if "---" not in line:
-                        license_string = step2(line.strip())
-                        of.write(license_string)
-                        of.write("\n")
+                if "---" not in line:
+                    if flag and not line.strip().isdigit():
+                        break
+                    flag = False
+                    license_string = step2(line.strip(), salt)
+                    of.write(license_string)
+                    of.write("\n")
 
-                        result = result + license_string + "\n"
-                    else:
-                        raise RuntimeError("errors in license format")
+                    result = result + license_string + "\n"
+                else:
+                    flag = True
 
         l = "===== license end ====="
         of.write(l)
@@ -72,8 +77,7 @@ import sys
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        raise RuntimeError("请依次输入2个参数 预检结果文件 和 许可证有效天数（如果永久许可，请输入99999)")
+        raise RuntimeError("请依次输入2个参数 预检结果文件、许可证有效天数（如果永久许可，请输入99999)")
     filename = sys.argv[1]
     license_days = sys.argv[2]
-
     license_create(filename, license_days)
