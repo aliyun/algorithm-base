@@ -14,8 +14,9 @@ from ab.utils.mixes import chunk_string
 from ab.utils.prometheus import time_metrics
 from ab.utils.reflection import hook_module
 
-
 pid = None
+
+
 def _checkpid():
     global pid
     if pid is None:
@@ -33,6 +34,8 @@ def get_spark_driver_version():
 
 
 spark_builder = None
+
+
 @time_metrics('spark')
 def init_spark_builder(config):
     if not config.SPARK:
@@ -75,6 +78,7 @@ class HookedPopen(Popen):
     """
     hook the Popen call to get process stdout & stderr log
     """
+
     def __init__(self, args, env=None, *more_args, **kwargs):
         logger.info('try to start spark process:', ' '.join(args))
         try:
@@ -120,7 +124,7 @@ class HookedPopen(Popen):
             if app_id is not None and line:
                 for t in chunk_string(line, 1000):
                     task_mapper.update(row={'log': concat(task_mapper.table.c.log, t)},
-                                   conditions={'spark_app_id': app_id})
+                                       conditions={'spark_app_id': app_id})
 
             # proc.poll() returns the retcode of subprocess
             # A None value indicates that the process hasn’t terminated yet
@@ -132,6 +136,8 @@ class HookedPopen(Popen):
 
 # process-isolated derby home
 derby_home = None
+
+
 def get_derby_home():
     global derby_home
     if not derby_home:
@@ -170,6 +176,7 @@ def get_or_create():
         spark = get_or_create_inner()
         spark.sparkContext.setLogLevel('ERROR')
         return spark
+
 
 def get_or_create_inner():
     spark = spark_builder.getOrCreate()

@@ -7,24 +7,6 @@ model_path = app.config.MODEL_PATH
 logger.info('model path is:', model_path)
 
 
-# from ab.decorate.warmup import warmup
-# @warmup()
-# def start():
-#     """
-#     将这段代码注入到核心算法接口中，以便实现license检查
-#     :return:
-#     """
-#     from ab.utils import logger
-#     from ab.keys.crypto import license_verify
-#     from ab.plugins.prob import restart_handler
-#     try:
-#         license_verify("license.ab")
-#     except Exception as e:
-#         logger.error(e)
-#         logger.set_level('FATAL')
-#         restart_handler()
-
-
 # 会自动暴露为/api/algorithm/add接口
 @algorithm()
 def add(a: int, b: int) -> int:
@@ -59,3 +41,4 @@ def compress() -> int:
     :return:
     """
     return "this is a hello world text file, glad to meet you, bye ~this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye this is a hello world text file, glad to meet you, bye "
+

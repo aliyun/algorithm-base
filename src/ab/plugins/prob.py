@@ -23,6 +23,7 @@ def init(config):
         logger.info("enable liveness prob: False")
 
 
+
 def liveness_prob(config):
     liveness_start_counter = 0
     liveness_period_counter = 0
@@ -90,3 +91,4 @@ def in_container():
 #     init(config)
 # if __name__ == '__main__':
 #     main(args=sys.argv[1:])
+

@@ -6,7 +6,7 @@ from ab.apps import prometheus
 from ab.utils import logger
 from ab.plugins import prob
 from ab.plugins.spring import eureka
-from ab.decorate import warmup
+from ab.decorate import warmup, when_ready_hooks, on_starting_hooks
 from ab.plugins.config.config_reader import read_local_config_files
 
 
@@ -29,7 +29,13 @@ def when_ready(server):
     :param server:
     :return:
     """
+    when_ready_hooks.do_callback(server)
+
     gc.freeze()
+
+
+def on_starting(server):
+    on_starting_hooks.do_callback(server)
 
 
 class GunicornApp(WSGIApplication):
@@ -43,6 +49,7 @@ class GunicornApp(WSGIApplication):
         'child_exit': child_exit,
         'when_ready': when_ready,
         'post_worker_init': post_worker_init,
+        'on_starting': on_starting,
     }
 
     # @override
@@ -132,3 +139,7 @@ def run():
     """
     gapp = GunicornApp("%(prog)s [config1,config2...]")
     gapp.run()
+
+
+if __name__ == "__main__":
+    run()

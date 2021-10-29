@@ -30,7 +30,7 @@ SAMPLER = {
 }
 
 # daily用这个
-EUREKA_SERVER = ac.get_value("test_eureka_server")
+# EUREKA_SERVER = ac.get_value("test_eureka_server")
 
 REGISTER_AT_EUREKA = False
 
@@ -111,3 +111,23 @@ accesslog='logs/access.log'
 errorlog='logs/error.log'
 # Redirect stdout/stderr to specified file in errorlog
 capture_output = True
+
+
+# configurations: https://spark.apache.org/docs/latest/configuration.html
+SPARK = {
+    # 'spark.master': 'local[*]',
+    'spark.master': 'yarn',
+
+    'spark.executor.memory': '2g',
+    'spark.executor.cores': '1',
+    'spark.cores.max': '4',
+    # use APP_NAME as default
+    # 'spark.app.name': APP_NAME,
+
+    # Logs the effective SparkConf as INFO when a SparkContext is started
+    'spark.logConf': "true",
+    'odps.numPartitions': 4,
+}
+
+# pyspark python的环境变量
+PYSPARK_PYTHON = '/usr/bin/python3'

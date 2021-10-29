@@ -1,5 +1,8 @@
-import sqlalchemy
 from sqlalchemy import MetaData, Table
+from sqlalchemy.exc import NoSuchTableError
+from sqlalchemy import *
+from sqlalchemy.engine import create_engine
+from sqlalchemy.schema import *
 
 import thrift.transport.TSocket
 
@@ -120,10 +123,13 @@ class Hive(DataBase):
 
     def table(self, table_name):
         try:
-            t = Table(table_name, MetaData(bind=self.engine), autoload=True)
+            table = Table(table_name, MetaData(bind=self.engine), autoload=True)
+        except NoSuchTableError:
+            raise AlgorithmException(data="no such table '{}' in hive".format(table_name))
         except Exception as e:
-            raise AlgorithmException('数据库无权限')
-        return t
+
+            raise AlgorithmException(data="hive error")
+        return table
 
     def column_names(self, table_name):
         table = self.table(table_name)
@@ -257,3 +263,6 @@ class HeadSampler(Sampler):
 
         logger.debug('sample sql:', sql)
         return self.db.table_sql(sql, table_name, column_names)
+
+
+

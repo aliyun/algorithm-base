@@ -80,6 +80,12 @@ def test_decrypt_text_common():
             assert t == "hello world\n"
             break
 
+def test_decrypt_text_common2():
+    source_path = resource_file_path(input_text_common)
+    text = read_text(source_path)
+
+    assert text == "hello world\nalgorithm-base!\n"
+
 
 def test_decrypt_text_with_sec():
     import subprocess
@@ -92,7 +98,6 @@ def test_decrypt_text_with_sec():
         for t in text:
             assert t == "hello world\n"
             break
-
 
 def test_decrypt_text_common_json():
     source_path = resource_file_path(input_text_common_json)

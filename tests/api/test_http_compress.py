@@ -7,8 +7,8 @@ def test_none_compress(client):
     assert resp['code'] == 0
 
 
-# def test_compress(client):
-#     url = '/api/algorithm/compress.zip'
-#     resp = client.post_data(url)
+def test_compress(client):
+    url = '/api/algorithm/compress.zip'
+    resp = client.get(url)
 
 

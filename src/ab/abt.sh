@@ -39,6 +39,43 @@ abt_build()
 
   # 更新基础镜像
   docker pull registry.cn-hangzhou.aliyuncs.com/medical-pub/ab-base:py37
+  rm -rf ./algorithms_tmp
+
+  cp -r ./algorithms ./algorithms_tmp
+  if [ $enable_license = "true" ]; then
+    folder_name=./algorithms_tmp
+    for file in ${folder_name}/*.py;
+      do
+        if [ $file = "./algorithms_tmp/__init__.py" ]; then
+          continue
+        fi
+        echo "
+from ab.decorate.warmup import warmup
+from ab.decorate import when_ready_hooks
+
+
+@warmup()
+def start():
+    from ab.utils import logger
+    from ab.keys.crypto import license_verify
+    from ab.plugins.prob import restart_handler
+    try:
+        license_verify(\"license.ab\")
+    except Exception as e:
+        logger.error(e)
+        logger.set_level('FATAL')
+        restart_handler()
+
+
+@when_ready_hooks.when_ready()
+def when_ready():
+    from ab.keys.crypto import add_task
+    add_task()
+
+" >> $file
+    break
+    done
+  fi
 
   # 编译并指定docker的上下文
   if [ $use_cache = "false" ]; then
@@ -46,6 +83,7 @@ abt_build()
   else
     docker build -t $docker_full_name:$docker_version -f docker/Dockerfile ./
   fi
+  rm -rf ./algorithms_tmp
   if [ $? -ne 0 ]; then
     echo "Abt build failed"
     echo "1" > "/tmp/abt.log_tmp"
@@ -97,7 +135,7 @@ fi
 
 
 # 获取命令行参数
-while getopts "n:v:s:c:o:u:p:i:" opt; do
+while getopts "n:v:s:c:o:u:p:i:l:" opt; do
     case "$opt" in
     n)  docker_name=$OPTARG
         ;;
@@ -114,6 +152,8 @@ while getopts "n:v:s:c:o:u:p:i:" opt; do
     p)  docker_password=$OPTARG
         ;;
     c)  use_cache=$OPTARG
+        ;;
+    l)  enable_license=$OPTARG
         ;;
     esac
 done

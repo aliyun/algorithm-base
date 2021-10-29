@@ -2,10 +2,11 @@ import sys
 import time
 
 from ab.utils import logger
+from ab.utils.abt_config import config as ac
 
 
 def request(client, input):
-    resp = client.post_data('/api/data_source/10000506/table/e_annual_performance/algorithm', input)
+    resp = client.post_data('/api/algorithm', input)
     assert resp['code'] == 0
     task_id = resp['data']
 
@@ -35,12 +36,23 @@ def request(client, input):
         time.sleep(0.5)
 
 
+
+
 def test_pool(client):
     input = {
+        "data_source": {
+            "host": ac.get_value("test_rds_host"),
+            "port": int(ac.get_value("test_rds_port")),
+            "username": ac.get_value("test_rds_username"),
+            "password": ac.get_value("test_rds_password"),
+            "db": ac.get_value("test_rds_db_test")
+        },
+
         "algorithm": "async_example",
-        "mode": "async_pool",    # 异步进程池执行
-        "cacheable": False, # 即使配置了redis缓存也不从缓存中读取，debug用
+        "mode": "async_pool",  # 异步进程池执行
+        "cacheable": False,  # 即使配置了redis缓存也不从缓存中读取，debug用
         "args": {
+            "table_name": "world_university_rank",
             "name": "fangliu"
         }
     }
@@ -49,10 +61,19 @@ def test_pool(client):
 
 def test_unlimited(client):
     input = {
+        "data_source": {
+            "host": ac.get_value("test_rds_host"),
+            "port": int(ac.get_value("test_rds_port")),
+            "username": ac.get_value("test_rds_username"),
+            "password": ac.get_value("test_rds_password"),
+            "db": ac.get_value("test_rds_db_test")
+        },
+
         "algorithm": "async_example",
-        "mode": "async_unlimited",    # 异步进程池执行
-        "cacheable": False, # 即使配置了redis缓存也不从缓存中读取，debug用
+        "mode": "async_unlimited",  # 异步进程池执行
+        "cacheable": False,  # 即使配置了redis缓存也不从缓存中读取，debug用
         "args": {
+            "table_name": "world_university_rank",
             "name": "fangliu"
         }
     }

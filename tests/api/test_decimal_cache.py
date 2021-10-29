@@ -8,7 +8,7 @@ def test_decimal(client):
     '''
     用含有decimal的表测试对decimal字段的处理
     '''
-    if not rc.redis_pool:
+    if not cache_plugin.redis_pool:
         print('未配置redis，跳过测试')
         sys.exit(0)
 

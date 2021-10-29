@@ -1,12 +1,13 @@
 import pytest
 
-from ab.utils import logger, db_master
-from ab.utils.db.rds import RDS
+from ab.utils import logger
+from ab.plugins.db import db_master
+from ab.plugins.db.rds import RDS
 from tests.utils.test_dao import insert_new_task
 
 
 def test_min_dbm_config(client):
-    from ab.utils.task import Task
+    from ab.task.task import Task
 
     # table may be empty, must insert at first
     # add & get
@@ -63,7 +64,7 @@ def test_max_page_size(client):
 
 
 def test_full_dbm_config(client):
-    from ab.utils.task import Task
+    from ab.task.task import Task
 
     # table may be empty, must insert at first
     # add & get

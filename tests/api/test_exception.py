@@ -3,7 +3,7 @@ import time
 
 def test_divide_zero(client):
     input = {'mode': 'async_pool'}
-    resp = client.post_data('/api/data_source/10000506/table/e_annual_performance/algorithm/exception', input)
+    resp = client.post_data('/api/algorithm/exception', input)
     assert resp['code'] == 0
     print(resp)
 
@@ -30,6 +30,6 @@ def test_divide_zero(client):
 
 
 def test_msg(client):
-    resp = client.post_data('/api/data_source/10000506/table/e_annual_performance/algorithm/msg')
+    resp = client.post_data('/api/algorithm/msg')
     assert resp['code'] == -100
     assert resp['data'] == 'hello world'

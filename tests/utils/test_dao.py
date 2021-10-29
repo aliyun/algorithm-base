@@ -7,7 +7,7 @@ import pytest
 from sqlalchemy.sql.functions import concat
 
 from ab.utils import logger, serializer
-from ab.utils.dao import Mapper
+from ab.plugins.db.dao import Mapper
 from sqlalchemy import *
 
 from ab.utils.exceptions import DuplicatedKeyException
@@ -23,7 +23,7 @@ def check_task_row(row):
 
 
 def insert_new_task():
-    from ab.utils.task import Task
+    from ab.task.task import Task
     task_mapper = Mapper('task', json_columns=['args', 'status', 'data'])
     new = {'app_name': 'algorithm_example',
            'algorithm_name': 'test_model',
@@ -37,7 +37,7 @@ def insert_new_task():
 
 
 def test_mapper(client):
-    from ab.utils.task import Task
+    from ab.task.task import Task
     task_mapper = Mapper('task', json_columns=['args', 'status', 'data'])
 
     # table may be empty, must insert at first

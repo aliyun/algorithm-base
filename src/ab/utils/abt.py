@@ -155,6 +155,7 @@ def build_params(args):
     params[" -f "] = str(args.force).strip().lower()
     params[" -u "] = abt.get_value("docker_registry_username")
     params[" -p "] = abt.get_value("docker_registry_password")
+    params[" -l "] = ac.get_value("enable_license") if ac.get_value("enable_license") is not None else "false"
     return params
 
 

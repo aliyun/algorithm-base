@@ -7,7 +7,7 @@ from ab.utils.algorithm import algorithm
 # 算法执行前算法状态已经初始化
 # 此时调用task_status接口会返回{'code': 0, 'status': None, 'data': None}。0代表已经初始化，但还没开始执行
 @algorithm(name='async_example')
-def main(data: pd.DataFrame, table_info, recorder, name='test', print_data=False):
+def main(data: pd.DataFrame, table_info, recorder, name='test', print_data=True):
     '''
     输入：
         data:
@@ -23,6 +23,7 @@ def main(data: pd.DataFrame, table_info, recorder, name='test', print_data=False
     # do some work...
     if print_data:
         # logger.debug(len(set(data['gender'])))
+        logger.debug(">>>>>>>>>>>>>>")
         logger.debug(data)
     # logger.debug(table_info)
     # logger.debug(name)

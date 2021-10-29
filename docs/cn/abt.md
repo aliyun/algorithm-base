@@ -191,6 +191,8 @@ encrypt_python_include[0]=.*
 encrypt_python_exclude[0]=config/config.*.py
 encrypt_python_exclude[1]=setup
 
+# [选填]是否启用license功能
+enable_license=false
 ```
 
 ---
