@@ -99,7 +99,6 @@ ASYNC_POOL_SIZE = 2
 
 DFS = {}
 
-
 ALGORITHM_DIR = 'tests/api/algorithms'
 
 FIXTURE_DIR = 'tests/api/fixtures'
@@ -115,8 +114,8 @@ capture_output = True
 
 # configurations: https://spark.apache.org/docs/latest/configuration.html
 SPARK = {
-    # 'spark.master': 'local[*]',
-    'spark.master': 'yarn',
+    'spark.master': 'local[*]',
+    # 'spark.master': ac.get_value("test_docker_spark"),
 
     'spark.executor.memory': '2g',
     'spark.executor.cores': '1',
@@ -131,3 +130,5 @@ SPARK = {
 
 # pyspark python的环境变量
 PYSPARK_PYTHON = '/usr/bin/python3'
+
+# SAVE_SPARK_LOG = True

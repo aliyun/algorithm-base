@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 # only enc
 def step1(input_line):
     sout = [chr(ord(a) ^ ord(b)) for (a, b) in
-            zip(input_line, cycle("your-key"))]
+            zip(input_line, cycle("utf-8oZFSxbFXYpZ4mcX5FIwEXecsYbutf-8"))]
     return "".join(sout)
 
 

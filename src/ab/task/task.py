@@ -1,4 +1,3 @@
-import contextlib
 import os
 import time
 import uuid
@@ -142,6 +141,7 @@ class SyncTask(Task):
             self.lazy_init()
             '''2. run'''
             ret = self.run_algorithm()
+            # fixme: throw errors when return by jsonify
             self.recorder.done(ret)
             return ret
         finally:

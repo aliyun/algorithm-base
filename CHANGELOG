@@ -1,5 +1,10 @@
 # 变更
 
+#### v3.0.1.2
+feat: custome response format are supported.
+fix: test case with hive, ODPS and spark.
+docs: sync/async request
+
 #### v3.0.1.0 变更
 feat: 支持多机license
 refactor: 测试用例整理

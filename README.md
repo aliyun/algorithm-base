@@ -85,6 +85,7 @@ The SLB binding succeeded, Access path http://somehost:someport,
 - [安装](docs/cn/install.md)
 - 服务能力
   - [服务与API](docs/cn/service.md)
+  - [同步与异步请求](docs/cn/task.md)
 - 数据处理能力
   - [操作rds/hive/odps数据](docs/cn/dbm.md)
   - [spark处理数据](docs/cn/service.md)
@@ -109,6 +110,7 @@ The SLB binding succeeded, Access path http://somehost:someport,
 - [插件机制](docs/cn/plugin.md)
 - 最佳实践
   - [如何创建新项目](docs/cn/new-project.md)
+  - [定制响应结构](docs/cn/custom-response-format.md)
   - [最佳实践](docs/cn/best-practice.md)
 
 ## 视频专区

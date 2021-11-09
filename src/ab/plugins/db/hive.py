@@ -1,8 +1,7 @@
+import sqlalchemy
+
 from sqlalchemy import MetaData, Table
 from sqlalchemy.exc import NoSuchTableError
-from sqlalchemy import *
-from sqlalchemy.engine import create_engine
-from sqlalchemy.schema import *
 
 import thrift.transport.TSocket
 

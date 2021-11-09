@@ -11,7 +11,9 @@ from ab.utils.mixes import chunk_string
 
 
 class TaskRecorder:
-    # TODO Task status
+    """
+    the status will be updated to database
+    """
     ERROR = -1
     INIT = 0
     RUNNING = 1

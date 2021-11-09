@@ -2,6 +2,7 @@ import decimal
 import sys
 import pickle
 from datetime import date, datetime
+from flask import Response
 
 import numpy
 import pandas as pd
@@ -13,6 +14,8 @@ from ab.utils.prometheus import func_metrics
 
 class AlgorithmEncoder(json.JSONEncoder):
     def default(self, o):
+        if isinstance(o, Response):
+            return str(o.data)
         if isinstance(o, pd.DataFrame):
             return o.to_dict('records')
         if isinstance(o, pd.Series):
