@@ -512,7 +512,7 @@ def init_oss_mount_path(oss_mount):
 
 
 def get_oss_data_mount(oss_mount: list):
-    index = 1
+    index = 0
     bucket_name = ab.get_value("oss_bucket")
     while True:
         key = "data[" + str(index) + "]"

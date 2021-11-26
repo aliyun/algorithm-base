@@ -213,6 +213,11 @@ class Config(dict):
                     self[key] = int(value)
                 else:
                     self[key] = value
+
+                    if str(value).lower() == "true":
+                        self[key] = True
+                    if str(value).lower() == "false":
+                        self[key] = False
         return True
 
     def get_namespace(self, namespace, lowercase=True, trim_namespace=True):

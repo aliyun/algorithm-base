@@ -1,5 +1,9 @@
 # 变更
 
+#### v3.0.2.2
+feat: convert api DEF into json format and generate api document by the endpoint `/doc`
+feat: use tox to test main features
+
 #### v3.0.1.2
 feat: custome response format are supported.
 fix: test case with hive, ODPS and spark.

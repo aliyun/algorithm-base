@@ -19,4 +19,4 @@ def test_hive_ldap(client):
     }
     resp = client.post_data('/api/algorithm/args?qs_arg=123', input)
     assert resp['code'] == 0
-    assert resp['data']['result']['data']
+    assert resp['data']['result']

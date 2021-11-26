@@ -106,11 +106,13 @@ The SLB binding succeeded, Access path http://somehost:someport,
   - [异常与错误处理](docs/cn/error.md)
   - [授权许可证](ext/license/README.md)
   - [测试用例](docs/cn/test.md)
+  - [文档与路由表](docs/cn/doc.md)
   - [更多的功能](docs/cn/features.md)
 - [插件机制](docs/cn/plugin.md)
 - 最佳实践
   - [如何创建新项目](docs/cn/new-project.md)
   - [定制响应结构](docs/cn/custom-response-format.md)
+  - [通过Jenkins构建镜像](docs/cn/jenkins.md)
   - [最佳实践](docs/cn/best-practice.md)
 
 ## 视频专区
