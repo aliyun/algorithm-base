@@ -177,8 +177,8 @@ memory=4096
 #  mountPath:容器内的绝对路径
 #  bucketPath:OSS路径，(不包含bucket名称)
 #  例：/root/app/config:abt/abtdemo/config/(最后的这个斜杠不能少) 将OSS中 abt/abtdemo/config 文件夹挂载到容器中的 /root/app/config
-data[1]=/root/app/resource/mydata:simple/resource/mydata
-data[2]=/root/app/resource/mydata2:simple/resource/mydata2
+data[0]=/root/app/resource/mydata:simple/resource/mydata
+data[1]=/root/app/resource/mydata2:simple/resource/mydata2
 
 # [选填] 需要加密的数据文件列表,支持正则表达式
 enable_crypto=false

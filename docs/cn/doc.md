@@ -10,7 +10,7 @@
 
 ```
 ---
-apiName: add
+apiName: 8个字以内的中文描述
 apiUrl: /api/algorithm/add
 method: GET|POST
 desc: 测试请求参数中含有2个基本类型
@@ -23,9 +23,7 @@ request:
 response:
   - sum||int||两个数之和||1.0
 sampleCode: >-
-  curl --location --request POST ''http://{ip}:{port}/api/algorithm/add'' \
-  --header ''Content-Type: application/json'' \
-  --data ''{sampleRequestCode}''
+  curl --location --request POST ''http://{ip}:{port}/api/algorithm/add'' --header ''Content-Type: application/json'' --data ''{sampleRequestCode}''
 sampleRequestCode: >-
   {
     "args": {"a": 1, "b": 2}

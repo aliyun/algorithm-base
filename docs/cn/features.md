@@ -25,8 +25,9 @@ ab的config继承自flask和gunicorn并加了些ab自有的配置项。因此可
 * LOG_LEVEL: 全局默认日志级别。底层依赖python的logging模块。
              logging的级别参见：[logging levels](https://docs.python.org/3/library/logging.html#levels)
              不填默认级别为`INFO`。
-* EUREKA_SERVER: 注册到哪个eureka。要接入disuite必填。
+* EUREKA_SERVER: 注册到哪个eureka。关于`INSTANCE_UP`的注意事项，和nacos一致。
 * REGISTER_AT_EUREKA: 是否将本服务注册为eureka client。要接入disuite必须为True。默认False。
+* NACOS_SERVER: 注册到nacos的地址。如 http://127.0.0.1:8848。注册服务时，会将config.INSTANCE_IP的地址注册到服务注册中心。如果不填，框架会自动抓取本服务的IP。如果使用docker，只有使用了`-host`模式，才能正确获取到宿主机ip，否则必须手动填写INSTANCE_IP的配置
 * REDIS: redis配置。使用异步任务就必填。
 * SPARK: spark配置。spark的所有配置项见：[spark configuration](https://spark.apache.org/docs/latest/configuration.html)。
          使用spark必填。

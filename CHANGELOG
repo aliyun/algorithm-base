@@ -1,4 +1,7 @@
-# 变更
+# CHANGELOG
+
+#### v3.0.3.0
+feat: support Nacos
 
 #### v3.0.2.2
 feat: convert api DEF into json format and generate api document by the endpoint `/doc`
@@ -9,16 +12,16 @@ feat: custome response format are supported.
 fix: test case with hive, ODPS and spark.
 docs: sync/async request
 
-#### v3.0.1.0 变更
-feat: 支持多机license
-refactor: 测试用例整理
+#### v3.0.1.0
+feat: support license within multiple nodes
+refactor: test case
 
-#### v3.0.0.2 变更
-feat: 提供一键测试，编译，部署到Serverless的功能，查看日志等功能
-feat: 镜像支持不启动服务，直接进入镜像调试
-fix:  修复了解密大文本文件的效率问题
-refactor: docker基础镜像变为公开镜像
-refactor: 文档重构
+#### v3.0.0.2
+feat: add `abt` command. it supports test, build/push image, publish service to serverless in one commnad.
+feat: support `docker run xxx debug` with AB docker image
+fix:  speed up decrypt with large file
+refactor: make the base docker image public
+refactor: refactor the docs
 
 
 #### v2.a.4.0 变更

@@ -50,11 +50,15 @@ DB = 'sqlite:////tmp/ab.db'
 INSTANCE_HOST = ""
 INSTANCE_IP = ""
 
+
+NACOS_DEFAULT_HEART_BEAT_INTERVAL_SECONDS = 10
+
+
 # 是否开启存活检查
 ENABLE_LIVENESS_PROB = True
 LIVENESS_PROB = {
     # 容器启动后要等待多少秒后存活和就绪探测器才被初始化，最小值是 0。
-    "initialDelaySeconds": 180,
+    "initialDelaySeconds": 600,
     # 执行探测的时间间隔（单位是秒）。最小值是 1。
     "periodSeconds": 60,
     # 探测的超时后等待多少秒。最小值是 1。

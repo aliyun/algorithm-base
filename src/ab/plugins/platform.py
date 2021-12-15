@@ -5,6 +5,7 @@ from ab.utils import logger
 
 plugin_alias = {}
 plugin_alias["cache"] = "REDIS"
+plugin_alias["nacos"] = "NACOS_SERVER"
 
 
 class Platform:
