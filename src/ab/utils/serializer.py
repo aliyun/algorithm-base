@@ -46,12 +46,34 @@ def _handle_sequence(seq, skip_underscore=False):
     converted = (json_serializable(v, skip_underscore) for v in seq)
     return [v for v in converted if v is not _cant_serialize]
 
-
 @json_serializable.register(int)
 @json_serializable.register(float)
 @json_serializable.register(str)
 @json_serializable.register(bool)  # redudant, supported as int subclass
 @json_serializable.register(type(None))
+@json_serializable.register(numpy.bool)
+@json_serializable.register(numpy.bool_)
+@json_serializable.register(numpy.int)
+@json_serializable.register(numpy.int_)
+@json_serializable.register(numpy.intc)
+@json_serializable.register(numpy.intp)
+@json_serializable.register(numpy.int8)
+@json_serializable.register(numpy.int16)
+@json_serializable.register(numpy.int32)
+@json_serializable.register(numpy.int64)
+@json_serializable.register(numpy.uint8)
+@json_serializable.register(numpy.uint16)
+@json_serializable.register(numpy.uint32)
+@json_serializable.register(numpy.uint64)
+@json_serializable.register(numpy.float_)
+@json_serializable.register(numpy.float)
+@json_serializable.register(numpy.float16)
+@json_serializable.register(numpy.float32)
+@json_serializable.register(numpy.float64)
+@json_serializable.register(numpy.complex)
+@json_serializable.register(numpy.complex_)
+@json_serializable.register(numpy.complex64)
+@json_serializable.register(numpy.complex128)
 def _handle_default_scalar_types(value, skip_underscore=False):
     return value
 

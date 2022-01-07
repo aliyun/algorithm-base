@@ -14,7 +14,8 @@ cpu_count = multiprocessing.cpu_count()
 
 timeout = 60  # seconds
 
-workers = cpu_count
+workers = 2
+
 # 防止压力堆积
 backlog = cpu_count * 32
 

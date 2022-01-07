@@ -1,5 +1,8 @@
 # CHANGELOG
 
+#### v3.0.3.2
+fix: response type should support numpy.int and some other basic type in numpy
+
 #### v3.0.3.0
 feat: support Nacos
 
