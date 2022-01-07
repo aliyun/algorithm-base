@@ -14,9 +14,7 @@ from ab.utils.prometheus import func_metrics
 from functools import singledispatch
 
 
-
 _cant_serialize = dict()
-
 
 @singledispatch
 def json_serializable(object, skip_underscore=False):
@@ -28,7 +26,7 @@ def json_serializable(object, skip_underscore=False):
     """
     # default handler, called for anything without a specific
     # type registration.
-    return _cant_serialize
+    return object
 
 
 @json_serializable.register(dict)
@@ -133,8 +131,6 @@ class AlgorithmEncoder(json.JSONEncoder):
 @func_metrics('serializer_dumps')
 def dumps(obj, *args, **kwargs):
     """json string"""
-    global _cant_serialize
-    _cant_serialize = dict()
     serialize_obj = json_serializable(obj, skip_underscore=True)
     return json.dumps(serialize_obj, *args, **kwargs, ensure_ascii=False, ignore_nan=True, cls=AlgorithmEncoder)
 
