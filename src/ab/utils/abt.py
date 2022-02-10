@@ -1,6 +1,7 @@
 import ab
 import os
 import subprocess
+import re
 from ab.utils import oss_util, sae_util
 from ab.utils.ab_config import config as ac
 from ab.utils.abt_config import config as abt
@@ -171,3 +172,40 @@ def get_app_slb_info(app_name, sl_namespace):
         logger.error("The application [{}] does not exist".format(app_name))
         return None
     return sae_util.desc_app_slb(sae_util.SaeRequest(), app)
+
+
+def project(args):
+    name = args.name
+    if re.match("^[a-z]([-_a-z0-9]{3,63})+$", name) is None:
+        logger.error("Failed to create project. The name must start with a lowercase letter and contain 4 to 64 "
+                     "lowercase letters, digits, underscores (_), and hyphens (-).")
+        return
+    ab_path = ab.__path__[0]
+    command = "cp -r " + ab_path.replace("/src/ab", "/examples/simple/") + " ./" + name
+    subprocess.run(command, shell=True)
+    replace(os.getcwd() + "/" + name, "simple", "simple", name)
+    logger.info("Project created successfully, You can run 'cd ./" + name + ";pyab' to start the project.")
+
+
+def replace(file_path, file_name, old, new):
+    if os.path.isfile(file_path):
+        if file_name == "doc.yaml" or "DS_Store" in file_name or file_name.endswith(".pyc"):
+            return
+        if file_name == "base.txt":
+            subprocess.run("sed -i '' 's/algorithm-base.git/algorithm-base.git@" + get_ab_version() + "/' " + file_path, shell=True)
+        subprocess.run("sed -i '' 's/" + old + "/" + new + "/' " + file_path, shell=True)
+    else:
+        if file_name == "docker":
+            return
+        for file_name in os.listdir(file_path):
+            replace(file_path + "/" + file_name, file_name, old, new)
+
+
+def get_ab_version():
+    import configparser
+    config_parser = configparser.RawConfigParser()
+    config_parser.read(ab.__path__[0].replace("/src/ab", "/setup.cfg"), "utf-8")
+    items = config_parser.items("metadata")
+    for item in items:
+        if item[0] == "version":
+            return item[1]

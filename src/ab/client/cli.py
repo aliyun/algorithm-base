@@ -19,11 +19,24 @@ def cli():
     add_encrypt_command(subparsers)
     add_crypto_command(subparsers)
     add_license_command(subparsers)
+    add_project_command(subparsers)
     args = parser.parse_args()
     logger.info("abt command, the args is [{}]".format(args))
     if not hasattr(args, "func"):
         args = parser.parse_args(["-h"])
+    if args.operate != "create":
+        from ab.utils.ab_config import config as ac
+        ac.is_load()
     args.func(args)
+
+
+def add_project_command(parsers):
+    project_cmd = parsers.add_parser("project", help="项目命令")
+    project_subparsers = project_cmd.add_subparsers()
+    logs_cmd = project_subparsers.add_parser("create", help="创建新项目")
+    logs_cmd.add_argument("-n", "--name", action="store", nargs="?", help="project name", required=True)
+    logs_cmd.add_argument("-v", "--version", action="store", nargs="?", help="the version of algorithm-base to use")
+    logs_cmd.set_defaults(func=abt.project, operate="create")
 
 
 def add_deploy_command(parsers, cmd_name, msg):

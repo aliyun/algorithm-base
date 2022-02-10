@@ -1,11 +1,20 @@
 # 如何创建新项目
 
-## 内部用户
+## 自动创建
 
-- 请使用ab-one平台，选择合适的ab框架版本，下载zip包解压缩即可。
+- 使用abt命令创建新项目
+```
+abt project create -n your-project-name
+```
 
-## github用户
+- 启动服务
+```
+cd your-project-name
+pyab
+```
 
+
+## 手动创建
 新项目以examples/simple项目为模板，请在AB框架根目录执行以下命令，详细步骤如下
 
 - 新建名称为`hello-world`的项目，复制`examples/simple`项目到指定位置（这里以`tmp`目录为例）

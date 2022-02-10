@@ -5,8 +5,7 @@ class AbConfig(object):
     def __init__(self):
         self.ab_config = {}
         if not os.path.exists("./.ab"):
-            print("you should run the abt command under a project root and put the .ab config file under the folder.")
-            exit(-1)
+            return
         with open("./.ab") as file:
             lines = file.readlines()
         for line in lines:
@@ -21,6 +20,11 @@ class AbConfig(object):
 
     def get_all_values(self):
         return self.ab_config
+
+    def is_load(self):
+        if not bool(self.ab_config):
+            print("you should run the command under a project root and put the .ab config file under the folder.")
+            exit(-1)
 
 
 config = AbConfig()

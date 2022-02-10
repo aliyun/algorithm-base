@@ -1,5 +1,8 @@
 # CHANGELOG
 
+#### √3.0.4.0
+feat: add `abt createproject` command
+
 #### v3.0.3.3
 fix: response type should support numpy.int and some other basic type in numpy
 
