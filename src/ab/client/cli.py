@@ -24,7 +24,7 @@ def cli():
     logger.info("abt command, the args is [{}]".format(args))
     if not hasattr(args, "func"):
         args = parser.parse_args(["-h"])
-    if args.operate != "create":
+    if "operate" in args and args.operate != "create":
         from ab.utils.ab_config import config as ac
         ac.is_load()
     args.func(args)

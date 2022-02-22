@@ -1,5 +1,8 @@
 # CHANGELOG
 
+#### v3.1.0.0
+fix: due to https://github.com/aws/aws-sam-cli/issues/3661, AB Framework have to do a break upgrade.
+
 #### √3.0.4.0
 feat: add `abt createproject` command
 
