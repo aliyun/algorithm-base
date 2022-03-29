@@ -1,5 +1,12 @@
 # CHANGELOG
 
+#### v3.2.0.0
+feat: decrypt all kinds of file
+feat: only in qr-branch, add abt decrypto command. Currently, abt crypto and decrypto can be used anywhere.
+
+#### v3.1.0.1
+feat: support pandas 1.2 and numpy 1.20
+
 #### v3.1.0.0
 fix: due to https://github.com/aws/aws-sam-cli/issues/3661, AB Framework have to do a break upgrade.
 

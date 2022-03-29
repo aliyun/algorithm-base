@@ -1,6 +1,7 @@
 import argparse
 from ab.utils.security import encrypt_impl
 from ab.client.crypto_cli import crypto_impl
+from ab.client.crypto_cli import decrypto_impl
 from ab.utils import abt
 from ab.utils import abt_logger as logger
 
@@ -18,6 +19,7 @@ def cli():
     add_get_command(subparsers)
     add_encrypt_command(subparsers)
     add_crypto_command(subparsers)
+    add_decrypto_command(subparsers)
     add_license_command(subparsers)
     add_project_command(subparsers)
     args = parser.parse_args()
@@ -122,6 +124,13 @@ def add_crypto_command(parsers):
                                                                         "matcher")
     cmd.set_defaults(func=crypto_impl)
 
+def add_decrypto_command(parsers):
+    cmd = parsers.add_parser("decrypto", help="解密数据文件")
+    cmd.add_argument("-c", "--clear", action="store", nargs="?", default=False, help="clear the original files")
+    cmd.add_argument("-i", "--include", action="store", nargs="?", help="decrypto the specific file and "
+                                                                    "folders. Supporting regex "
+                                                                    "matcher")
+    cmd.set_defaults(func=decrypto_impl)
 
 def license(args):
     from ab.keys.crypto import license_impl

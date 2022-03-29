@@ -2,7 +2,7 @@ import pickle
 
 # from ab.utils.os_util import resource_file_path
 from ab.keys.crypto import ab_encryptFile
-from ab.keys.data import open_text, open_binary, read_text, read_pickle
+from ab.keys.data import open_text, open_binary, read_text, read_pickle,raw_file_path
 
 input_pickle = "resources/pickle_example"
 input_text_common = "resources/text_common"
@@ -68,6 +68,17 @@ def test_decrypt_pickle_after_remove_source():
     assert "world" == obj["hello"]
     assert "好" == obj["你"]
 
+    with open_binary("tests/resources/pickle_example", force=True) as buffer:
+        obj = pickle.loads(buffer)
+        assert "world" == obj["hello"]
+        assert "好" == obj["你"]
+
+
+def test_file_path():
+    f1 = raw_file_path("tests/resources/text_common")
+    print(">>> f1 >>>",f1)
+    f2 = raw_file_path("tests/resources/example.xlsx")
+    print(">>> f2 >>>",f2)
 
 # # ==============================================================================
 # # 文本类文件
@@ -79,6 +90,7 @@ def test_decrypt_text_common():
         for t in text:
             assert t == "hello world\n"
             break
+
 
 def test_decrypt_text_common2():
     source_path = resource_file_path(input_text_common)
@@ -98,6 +110,7 @@ def test_decrypt_text_with_sec():
         for t in text:
             assert t == "hello world\n"
             break
+
 
 def test_decrypt_text_common_json():
     source_path = resource_file_path(input_text_common_json)
@@ -147,6 +160,3 @@ def test_decrpyt_text_common_without_crypto():
         for t in text:
             assert t == "hello world raw text,\n"
             break
-
-
-

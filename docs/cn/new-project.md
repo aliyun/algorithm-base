@@ -3,6 +3,15 @@
 ## 自动创建
 
 - 使用abt命令创建新项目
+备注(fixme)： 
+安装在site-pacakge下的ab框架，其实是不包含examples代码的
+
+如果你需要创建基于ab框架的项目，目前的方式有些繁琐，如下
+
+1. 先git clone AB框架的代码到某个目录
+2. 进入上面的目录，使用pip install -e . 安装源码
+3. 使用如下命令创建项目
+
 ```
 abt project create -n your-project-name
 ```

@@ -7,7 +7,7 @@ from ab.keys.crypto import ab_encryptFile
 SEC_FILE_POSTFIX = ".sec"
 
 
-def list_dir(file_pattern):
+def list_dir(file_pattern, encrypt=True):
     """
     列出需要加密的文件
     :file_pattern: 匹配文件的正则表达式
@@ -28,8 +28,12 @@ def list_dir(file_pattern):
     for root, dirs, files in os.walk(dir, topdown=True):
         for name in files:
             if include_name(os.path.join(root, name)):
-                if name[-4:] != SEC_FILE_POSTFIX:
-                    target_files.append(os.path.join(root, name))
+                if encrypt:
+                    if name[-4:] != SEC_FILE_POSTFIX:
+                        target_files.append(os.path.join(root, name))
+                else:
+                    if name[-4:] == SEC_FILE_POSTFIX:
+                        target_files.append(os.path.join(root, name))
 
     l = len(dir)
     target_files = [x[l + 1:] for x in target_files]
@@ -44,15 +48,22 @@ def gen_crypto_files(root_dir, files, clear=False):
     for f in files:
         infile = root_dir + "/" + f
         logger.info("crypto file {}".format(infile))
-        # python to c
+        # python to .sec
         ab_encryptFile(infile, infile + SEC_FILE_POSTFIX)
 
         if clear:
             command = "rm -rf {}".format(f)
             subprocess.run(command, shell=True)
 
-
+# ========== FACADE ==========
 def crypto_impl(args):
-    dir, target_files = list_dir(args.include)
+    dir, target_files = list_dir(args.include, encrypt=True)
 
     gen_crypto_files(dir, target_files, args.clear)
+
+
+def decrypto_impl(args):
+    dir, target_files = list_dir(args.include, encrypt=False)
+
+    print("it's not safe, removed. Only in feat-qr branch")
+
