@@ -12,7 +12,6 @@ index-url = http://mirrors.aliyun.com/pypi/simple/
 trusted-host = mirrors.aliyun.com
 ```
 
-
 ## 使用源代码安装(推荐)
 - 先clone AB框架源代码
 
@@ -27,18 +26,13 @@ github用户
 git clone https://github.com/aliyun/algorithm-base.git
 ```
 
-- 进入项目根目录，按照如下命令安装
-
-```
-pip install . 
-```
-
-- 对于ab框架开发者，进入ab框架根目录，调试安装
+- 推荐的安装方式，进入ab框架根目录，键入如下命令
+  - 以后框架升级，只需要git pull代码即可，无需重新安装。
+  - 只有此种安装方式，可以使用abt工具全部特性。
 
 ```
 pip install -e .
 ```
-
 
 ## 离线安装
 

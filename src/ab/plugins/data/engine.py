@@ -14,7 +14,7 @@ from ab.utils.exceptions import AlgorithmException
 
 class Engine:
     @staticmethod
-    def get_instance(config: dict=None):
+    def get_instance(config: dict = None):
         if not config or config['type'] == 'python':
             return Engine('python')
         if config['type'] == 'spark':
@@ -34,6 +34,17 @@ class Engine:
         column_names = [c['field'] for c in table_info['columns']]
         sample_df = DataFrame(sample, columns=column_names)
         return sample_rate, sample_count, sample_df
+
+    def read_data_by_sql(self, ds: DataSource):
+        """
+        read data from custom sql
+        :param ds:
+        :return:
+        """
+
+        # todo: extract field to DataFrame
+        data = ds.data()
+        return DataFrame(data)
 
     def stop(self):
         pass

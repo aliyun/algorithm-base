@@ -34,6 +34,11 @@ class DuplicatedKeyException(AlgorithmException):
         super(DuplicatedKeyException, self).__init__(-2, data)
 
 
+class DataAPIException(AlgorithmException):
+    def __init__(self, data=None):
+        super(DataAPIException, self).__init__(-10, data)
+
+
 class Message(Exception):
     def __init__(self, msg):
         self.msg = msg

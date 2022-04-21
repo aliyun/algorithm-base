@@ -4,6 +4,7 @@ from ab import app
 from ab.services import data_source as data_source_service
 from ab.utils import logger
 from ab.plugins.db.rds import RDS
+from ab.plugins.db.sqlite import Sqlite
 from ab.plugins.db.odps_helper import ODPS
 from ab.utils.prometheus import time_metrics
 from ab.plugins.cache.redis import cache_plugin
@@ -24,11 +25,14 @@ class DataSource:
             # some api may not use data_source
             return None
 
-        # TODO args.get('fields')
+        table_name = data_source.get("table_name") or args.get('table_name') or kwargs.get("table_name")
+        sql = data_source.get("sql") or args.get('sql') or kwargs.get("sql")
+        partitions = data_source.get("partitions") or args.get('partitions') or kwargs.get("partitions")
+
         if cacheable:
-            return CachedDataSource(data_source, args.get('table_name'), args.get('partitions'), sampler)
+            return CachedDataSource(data_source, table_name, partitions, sampler, sql=sql)
         else:
-            return DataSource(data_source, args.get('table_name'), args.get('partitions'), sampler)
+            return DataSource(data_source, table_name, partitions, sampler, sql=sql)
 
     @staticmethod
     def get_instance_by_id(data_source_id, table_name, partitions=None, cacheable=True, sampler=None, **kwargs):
@@ -48,6 +52,23 @@ class DataSource:
             return DataSource(data_source, table_name, partitions, sampler)
 
     @staticmethod
+    def retrieve_datasource_object(data_object):
+        """
+        :param data_object:
+        :return: return the data object if it's a datasource object. else return None
+        """
+        if not data_object:
+            return None
+
+        datasource_field = ['host', 'port', 'db', 'username', 'password', 'access_id', 'access_key', 'project',
+                            'endpoint', 'tunnel_endpoint']
+        for item in datasource_field:
+            if hasattr(data_object, item):
+                if getattr(data_object, item):
+                    return data_object
+        return None
+
+    @staticmethod
     def init_db(data_source):
         _type = data_source.get('type', 'mysql').lower()
         if _type in ('mysql', 'ads'):
@@ -61,19 +82,29 @@ class DataSource:
             from ab.plugins.db.hive import Hive
             return Hive(data_source['host'], data_source['port'], data_source['db'],
                         data_source['username'], data_source.get('password'))
+        if _type in ('sqlite'):
+            return Sqlite(data_source['db'])
         else:
             raise TypeError('不支持的数据源类型：' + data_source['type'])
 
-    def __init__(self, data_source, table_name, partitions: list = None, sampler_config: dict = None):
+    def __init__(self, data_source, table_name, partitions: list = None, sampler_config: dict = None, sql=None):
         self.type_ = data_source.get('type', 'mysql').lower()
         self.db = self.init_db(data_source)
         self.table_name = table_name
         self.partitions = partitions
+        self.sql = sql
         self.db.set_sampler(sampler_config)
 
     def sample(self):
         tic = time.time()
         ret = self.db.sample(self.table_name, partitions=self.partitions)
+        toc = time.time()
+        logger.debug('sample time:', toc - tic)
+        return ret
+
+    def data(self):
+        tic = time.time()
+        ret = self.db.execute(self.sql)
         toc = time.time()
         logger.debug('sample time:', toc - tic)
         return ret
@@ -90,14 +121,17 @@ class DataSource:
 
 
 class CachedDataSource(DataSource):
-    def __init__(self, data_source, table_name, partitions: list = None, sampler_config: dict = None):
-        super(CachedDataSource, self).__init__(data_source, table_name, partitions, sampler_config)
+    def __init__(self, data_source, table_name, partitions: list = None, sampler_config: dict = None, sql=None):
+        super(CachedDataSource, self).__init__(data_source, table_name, partitions, sampler_config, sql)
 
         db = self.db
         # init keys
         if self.type_ in ('mysql', 'ads'):
             self.table_key = 'rds://{}:{}/{}.{}.pickle'.format(db.host, db.port, db.db, table_name)
             self.cache_key = 'rds://{}:{}/{}.{}:{}.pickle'.format(db.host, db.port, db.db, table_name, db.sampler.key)
+        elif self.type_ in ('sqlite'):
+            self.table_key = 'sqlite://{}.{}.pickle'.format(db.db, table_name)
+            self.cache_key = 'sqlite://{}.{}:{}.pickle'.format(db.db, table_name, db.sampler.key)
         elif self.type_ == 'odps':
             if partitions:
                 partitions = '|' + ','.join(partitions)
@@ -105,7 +139,7 @@ class CachedDataSource(DataSource):
                 partitions = ''
             self.table_key = 'odps://{}/{}.{}.pickle'.format(db.endpoint, db.project, table_name)
             self.cache_key = 'odps://{}/{}.{}{}:{}.pickle'.format(db.endpoint, db.project, table_name, partitions,
-                                                           db.sampler.key)
+                                                                  db.sampler.key)
         elif self.type_ == 'hive':
             if partitions:
                 partitions = '|' + ','.join(partitions)
@@ -113,7 +147,7 @@ class CachedDataSource(DataSource):
                 partitions = ''
             self.table_key = 'hive://{}:{}/{}.{}.pickle'.format(db.host, db.port, db.db, table_name)
             self.cache_key = 'hive://{}:{}/{}.{}{}:{}.pickle'.format(db.host, db.port, db.db, table_name, partitions,
-                                                              db.sampler.key)
+                                                                     db.sampler.key)
 
     def delete_table_cache(self):
         cache_client = cache_plugin.get_cache_client()

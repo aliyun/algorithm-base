@@ -85,6 +85,7 @@ The SLB binding succeeded, Access path http://somehost:someport,
 - [安装](docs/cn/install.md)
 - 服务能力
   - [服务与API](docs/cn/service.md)
+  - [数据与API](docs/cn/service_data.md)
   - [同步与异步请求](docs/cn/task.md)
 - 数据处理能力
   - [操作rds/hive/odps数据](docs/cn/dbm.md)

@@ -31,7 +31,7 @@ def request(client, input):
             break
 
         times += 1
-        if times > 10:
+        if times > 100:
             raise TimeoutError('async task timeout')
         time.sleep(0.5)
 

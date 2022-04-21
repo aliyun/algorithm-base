@@ -24,7 +24,7 @@ def test_divide_zero(client):
             break
 
         times += 1
-        if times > 10:
+        if times > 100:
             raise TimeoutError('async task timeout')
         time.sleep(0.5)
 

@@ -4,6 +4,7 @@ import pkgutil
 
 from ab.utils.exceptions import AlgorithmException
 from ab.utils.prometheus import func_metrics
+from ab.utils.python_util import arguments
 
 
 class Algorithm:
@@ -26,10 +27,11 @@ class Algorithm:
         defaults_map = {key: value.default for key, value in sig.parameters.items() if value.default != sig.empty}
         return sig, params, defaults_map
 
-    def __init__(self, name, engine, func):
+    def __init__(self, name, engine, func, **kwargs):
         self.name = name
         self.engine = engine
         self.main = func
+        self.decorate_params, _ = arguments()
         self.sig, self.params, self.defaults_map = Algorithm.process_signature(func)
 
     def __str__(self):
@@ -60,7 +62,7 @@ class Algorithm:
 algorithms = {}
 
 
-def algorithm(name=None, engine='python'):
+def algorithm(name=None, engine='python', **kwargs):
     """
     register func as algorithm entry
     same as Java Spring @Service
@@ -70,18 +72,27 @@ def algorithm(name=None, engine='python'):
     assert engine in ['python', 'spark']
 
     def register_func(func):
-        register_algorithm(name, engine, func)
+        register_algorithm(name, engine, func, **kwargs)
         return func
 
     return register_func
 
 
-def register_algorithm(name: str, engine: str, func):
+def register_algorithm(name: str, engine: str, func, **kwargs):
     name = name or func.__name__
     # wrap algorithm entry
     func = (func_metrics('algorithm_' + name))(func)
     # TODO check duplication
-    algorithms[(name, engine)] = Algorithm(name, engine, func)
+    algorithms[(name, engine)] = Algorithm(name, engine, func, **kwargs)
+
+
+def retrieve_algorithm_params(name, engine="python"):
+    if (name, engine) in algorithms:
+        algo_object = algorithms.get((name, engine))
+
+        return algo_object.decorate_params
+    else:
+        return {}
 
 
 def register_all_algorithms(config):
@@ -94,5 +105,3 @@ def register_all_algorithms(config):
     __import__("ab.utils.inner_algorithm")
     from ab.utils import logger
     logger.debug('algorithms:', algorithms)
-
-

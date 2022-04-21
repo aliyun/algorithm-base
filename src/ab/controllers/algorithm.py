@@ -7,6 +7,8 @@ from gzip import GzipFile
 
 from ab.services import data_source, algorithm
 from ab.utils import logger
+from ab.utils import algorithm as algorithm_util
+from ab.utils.data_source import DataSource
 from ab.utils.exceptions import AlgorithmException, Message
 
 from ab import jsonify
@@ -81,7 +83,7 @@ def parse_algorithm_name(algorithm_name, response_format):
         return algorithm_name
 
 
-def get_request_args():
+def get_request_args(algorithm_name):
     body = {'args': {}}
 
     if request.is_json:
@@ -96,9 +98,20 @@ def get_request_args():
             # bugfix: py3.5, d.update(request.files) get {k: [v]}, while py3.6 get {k: v}
             body['args'].update(multi_dict_to_flat_dict(request.files))
 
+    # data source from config
     if app.config.FORCE_DATA_SOURCE and body.get('data_source'):
         logger.warning('config.FORCE_DATA_SOURCE is set, "data_source" in request body ignored')
-    data_source = app.config.FORCE_DATA_SOURCE or body.get('data_source') or app.config.DATA_SOURCE
+
+
+    # data source piority.
+    # 0. force: app.config.FORCE_DATA_SOURCE
+    # 1. request : body.get('data_source')
+    # 2. decorator: it's extracted from `algo params`, return object if it's a datasource, else return None
+    # 3. config : app.config.DATA_SOURCE
+    data_source = app.config.FORCE_DATA_SOURCE \
+                  or body.get('data_source') \
+                  or DataSource.retrieve_datasource_object(algorithm_util.retrieve_algorithm_params(algorithm_name)) \
+                  or app.config.DATA_SOURCE
     if data_source:
         body['data_source'] = data_source
 
@@ -125,7 +138,7 @@ def run_algorithm_backend(algorithm_name=None):
     """
     dataless api
     """
-    body = get_request_args()
+    body = get_request_args(algorithm_name)
 
     if algorithm_name:
         body['algorithm'] = parse_algorithm_name(algorithm_name, body["format"])
@@ -177,7 +190,7 @@ def run_algorithm_frontend(data_source_id, table_name, algorithm_name=None):
         raise AlgorithmException('config.FORCE_DATA_SOURCE is set, '
                                  'APIs like "/api/data_source/<int:data_source_id>/xxxx" are disabled')
 
-    body = get_request_args()
+    body = get_request_args(algorithm_name)
 
     if algorithm_name:
         body['algorithm'] = algorithm_name

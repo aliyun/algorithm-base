@@ -1,5 +1,12 @@
 # CHANGELOG
 
+#### v3.3.0.0
+feat: `datasource` support sqlite3
+feat: you can define your `datasource` in request, decorator or config.
+feat: you can define the `table_name` in datasource.
+feat: suport custom sql.
+test: add test case for datasource.
+
 #### v3.2.0.0
 feat: decrypt all kinds of file
 feat: only in qr-branch, add abt decrypto command. Currently, abt crypto and decrypto can be used anywhere.

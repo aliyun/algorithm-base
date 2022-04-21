@@ -53,6 +53,10 @@ class Task:
         light weight init.
         the whole self object should be dumpable after init since AsyncTask.run depends on pickle.dumps
         """
+        self.data_source = None
+        self.engine = None
+        self.algorithm = None
+        self.spark = None
         self.id = Task.get_next_id()
         self.request = request
         if 'args' in self.request:
@@ -88,8 +92,15 @@ class Task:
         if self.data_source:
             # read data
             if 'data' in self.algorithm.params:
-                self.kwargs['sample_rate'], self.kwargs['sample_count'], self.kwargs['data'] = \
-                    self.engine.read_data(self.data_source)
+                if getattr(self.data_source,"sql"):
+                    # read from custom sql
+                    d = self.engine.read_data_by_sql(self.data_source)
+                    self.kwargs['sample_rate'], self.kwargs['sample_count'], self.kwargs['data'] = \
+                        1, len(d), d
+                else:
+                    # sample from table
+                    self.kwargs['sample_rate'], self.kwargs['sample_count'], self.kwargs['data'] = \
+                        self.engine.read_data(self.data_source)
             # underlying db
             if 'db' in self.algorithm.params:
                 self.kwargs = self.data_source.db
@@ -149,7 +160,8 @@ class SyncTask(Task):
             self.after_run()
 
 
-g_inprogress_async_tasks = Gauge("inprogress_async_tasks", "async task", labelnames=['mode'], multiprocess_mode='livesum')
+g_inprogress_async_tasks = Gauge("inprogress_async_tasks", "async task", labelnames=['mode'],
+                                 multiprocess_mode='livesum')
 
 
 class AsyncTask(Task):

@@ -1,102 +1,65 @@
-#! python3
+# ! python3
 import random
 import re
 
-import pymysql
+import sqlite3
 from ab.utils.prometheus import func_metrics
-from pymysql.constants import CR
 
 from ab import app
 from ab.utils import logger
 from ab.plugins.db.base import DataBase
 from ab.utils.exceptions import DataAPIException
 from ab.utils.logger import Logger
-from ab.utils.mixes import first_char_lower
 
 varchar_regex = re.compile(r'varchar\((\d+)\)')
 
 
-class RDS(DataBase):
-    jdbc_url_pattern = re.compile(r'jdbc:mysql://(?P<host>[^:]+)(:(?P<port>\d+))?/(?P<db>[^?]+)')
+class Sqlite(DataBase):
 
-    @staticmethod
-    def parse_jdbc_url(jdbc_url):
-        m = re.match(RDS.jdbc_url_pattern, jdbc_url).groupdict()
-        port = m.get('port')
-        port = int(port) if port else None
-        return m['host'], port, m['db']
-
-    @staticmethod
-    def is_indexable_data_type(dt):
-        dt = dt.lower()
-        if dt.lower() in ('tinytext', 'text', 'mediumtext', 'longtext', 'json'):
-            return False
-        # varchar
-        m = varchar_regex.match(dt)
-        if m:
-            length = int(m.group(1))
-            # utf8 = 255, utfmb4 = 191
-            return length <= 255
-        # default to True
-        return True
-
-    def __init__(self, host, port, db, username, password='', autocommit=True):
+    def __init__(self, db, autocommit=True):
         self.sampler_class = Sampler
-        self.host = host
-        self.port = port
         self.db = db
-        self.username = username
-        self.password = password
         self.autocommit = autocommit
-        self.connect(host, port or 3306, username, password, db, autocommit)
+        self.connect(db, autocommit)
 
-    def connect(self, host, port, username, password, db, autocommit, charset='utf8',
-                cursorclass=pymysql.cursors.DictCursor):
-        # print host, port, user, password, db
-        self.connection = pymysql.connect(host=host, port=port, user=username, password=password,
-                                          database=db, autocommit=autocommit, charset=charset, cursorclass=cursorclass)
+    def connect(self, db, autocommit, charset='utf8'):
+        self.connection = sqlite3.connect(self.db)
 
     def reconnect(self):
         self.connection.ping(reconnect=True)
 
     @property
     def jdbc_url(self):
-        return 'jdbc:mysql://{self.host}:{self.port}/{self.db}?useSSL=false&serverTimezone=Hongkong'.format(self=self)
+        pass
 
     def inner_execute(self, sql, args=None):
-        action = sql.strip().split()[0].upper()
-        with self.connection.cursor() as cursor:
+        try:
+            action = sql.strip().split()[0].upper()
+            cursor = self.connection.cursor()
             # logger.debug(sql)
             # logger.debug(args)
-            num = cursor.execute(sql, args)
-            if action in ('SELECT', 'SHOW'):
+
+            if args:
+                num = cursor.execute(sql, args)
+            else:
+                num = cursor.execute(sql)
+
+            # todo: other operation
+            if action.lower() in ('select', 'show', 'pragma'):
                 return cursor.fetchall()
-            elif action == 'INSERT':
-                return cursor.lastrowid
             else:
                 return num
+
+        finally:
+            self.connection.commit()
+            # self.connection.close()
 
     @func_metrics('rds_execute')
     def execute(self, sql, args=None):
         """
         WARNING: this func has no sql injection prevention. don't use this unless you know what you're doing
         """
-        try:
-            return self.inner_execute(sql, args)
-        except pymysql.err.OperationalError as e:
-            # 2003 Can't connect to MySQL server on 'xxx'
-            # 2006 MySQL server has gone away. write
-            # 2013 Lost connection to MySQL server during query. read
-            if e.args[0] in (CR.CR_CONN_HOST_ERROR, CR.CR_SERVER_GONE_ERROR, CR.CR_SERVER_LOST):
-                logger.debug('get mysql error', e)
-                self.reconnect()
-                return self.inner_execute(sql, args)
-            else:
-                raise e
-        except pymysql.err.InterfaceError as e:
-            # socket is null, reconnect anyway
-            self.reconnect()
-            return self.inner_execute(sql, args)
+        return self.inner_execute(sql, args)
 
     @staticmethod
     def gen_where(conditions):
@@ -118,7 +81,7 @@ class RDS(DataBase):
             else:
                 key, operator = key_operator.split(':')
 
-            key = RDS.escape(key)
+            key = Sqlite.escape(key)
             m = {
                 'eq': lambda k, v: ('{0} = %s'.format(k), v),
                 'gt': lambda k, v: ('{0} > %s'.format(k), v),
@@ -138,11 +101,11 @@ class RDS(DataBase):
             return '*'
         if isinstance(fields, str):
             fields = fields.split(',')
-        return ', '.join([RDS.escape(f) for f in fields])
+        return ', '.join([Sqlite.escape(f) for f in fields])
 
     def select(self, table, fields='*', conditions=None, order_by=None, start=0, num=None):
         fields_str = self.gen_fields_str(fields)
-        sql = 'SELECT {fields_str} FROM {table}'.format(fields_str=fields_str, table=RDS.escape(table))
+        sql = 'SELECT {fields_str} FROM {table}'.format(fields_str=fields_str, table=Sqlite.escape(table))
         values = []
 
         if conditions:
@@ -155,12 +118,12 @@ class RDS(DataBase):
                 assert order in ('ASC', 'DESC')
             else:
                 order = ''
-            sql += ' ORDER BY ' + RDS.escape(order_by)
+            sql += ' ORDER BY ' + Sqlite.escape(order_by)
             if order:
                 sql += ' ' + order
         if num is not None:
-            sql += ' LIMIT %s, %s'
-            values.extend([start, num])
+            sql += ' LIMIT ? offset ?'
+            values.extend([num, start])
         return self.execute(sql, values)
 
     def select_one(self, table, conditions=None, order_by=None):
@@ -177,21 +140,21 @@ class RDS(DataBase):
         if not table:
             raise DataAPIException("you have to specify a table name, but can't be None")
 
-        sql = 'SELECT count(*) AS count FROM {0}'.format(RDS.escape(table))
+        sql = 'SELECT *  FROM {0}'.format(Sqlite.escape(table))
         if not conditions:
             result = self.execute(sql)
         else:
             where, values = self.gen_where(conditions)
             result = self.execute(sql + where, values)
-        return result[0]['count']
+        return len(result)
 
     def insert(self, table, kwargs):
         """
         :return: last row id
         """
         sql = 'INSERT INTO {table} ({columns}) VALUES ({values})'.format(
-            table=RDS.escape(table),
-            columns=', '.join(map(RDS.escape, kwargs.keys())),
+            table=Sqlite.escape(table),
+            columns=', '.join(map(Sqlite.escape, kwargs.keys())),
             values=', '.join(['%s'] * len(kwargs))
         )
         # keys() and values() hold the same order
@@ -200,8 +163,8 @@ class RDS(DataBase):
     def update(self, table, kwargs, conditions):
         where, where_values = self.gen_where(conditions)
         sql = 'UPDATE {table} SET {columns} {where}'.format(
-            table=RDS.escape(table),
-            columns=', '.join(['{0} = %s'.format(RDS.escape(key)) for key in kwargs.keys()]),
+            table=Sqlite.escape(table),
+            columns=', '.join(['{0} = %s'.format(Sqlite.escape(key)) for key in kwargs.keys()]),
             where=where
         )
         # keys() and values() hold the same order
@@ -214,10 +177,10 @@ class RDS(DataBase):
 
     def insert_on_dup_update(self, table, kwargs):
         sql = 'INSERT INTO {table} ({columns}) VALUES ({values}) ON DUPLICATE KEY UPDATE {kv}'.format(
-            table=RDS.escape(table),
-            columns=', '.join(map(RDS.escape, kwargs.keys())),
+            table=Sqlite.escape(table),
+            columns=', '.join(map(Sqlite.escape, kwargs.keys())),
             values=', '.join(['%s'] * len(kwargs)),
-            kv=', '.join([(RDS.escape(k) + ' = %s') for k in kwargs])
+            kv=', '.join([(Sqlite.escape(k) + ' = %s') for k in kwargs])
         )
         # keys() and values() hold the same order
         return self.execute(sql, list(kwargs.values()) * 2)
@@ -252,25 +215,19 @@ class RDS(DataBase):
             values = args
 
         sql = 'INSERT INTO {table} ({columns}) VALUES ({values})'.format(
-            table=RDS.escape(table),
-            columns=', '.join(map(RDS.escape, columns)),
+            table=Sqlite.escape(table),
+            columns=', '.join(map(Sqlite.escape, columns)),
             values=', '.join(['%s'] * len(columns))
         )
         return self.execute_many(sql, values)
 
     def get_column_meta(self, table_name: str) -> list:
-        return self.execute('SHOW FULL COLUMNS FROM {table_name}'.format(table_name=table_name))
+        return self.execute('pragma table_info({table_name})'.format(table_name=table_name))
+        # return self.execute('select * from {table_name}'.format(table_name=table_name))
 
     def get_table_size_in_KB(self, table_name: str) -> int:
-        ret = self.execute('''
-            SELECT round(((data_length + index_length) / 1024), 2) AS `KB` 
-            FROM information_schema.TABLES 
-            WHERE table_schema = '{self.db}'
-            AND table_name = '{table_name}'
-        '''.format(self=self, table_name=table_name))
-        if ret:
-            return ret[0]['KB']
-        return None
+        # todo
+        return 0
 
     @staticmethod
     def rds_to_xlab_type(_type: str):
@@ -301,8 +258,16 @@ class RDS(DataBase):
                     {'field': 'f1', 'type': 'double', 'xlabType': 'Double', comment': '年总销售额'}
                 ]
         '''
-        columns = self.get_column_meta(table_name)
-        columns = [{first_char_lower(k): v for k, v in column.items()} for column in columns]
+        sqlite_columns = self.get_column_meta(table_name)
+
+        columns = []
+        for item in sqlite_columns:
+            c = dict()
+            c["field"] = item[1]
+            c["type"] = item[2]
+            c["comment"] = ""
+            columns.append(c)
+
         for column in columns:
             column['xlabType'] = self.rds_to_xlab_type(column['type'])
         table_size = self.get_table_size_in_KB(table_name)
@@ -335,6 +300,13 @@ class RDS(DataBase):
 
         return self.sampler.sample(table_name, total_count)
 
+    def table_sql(self, sql, table_name, column_names: list = None):
+        """
+        return sql result over table
+        """
+        rows = self.execute(sql)
+        return rows
+
     def close(self):
         return self.connection.close()
 
@@ -347,7 +319,7 @@ class RDS(DataBase):
 
 class Sampler:
     @staticmethod
-    def get_instance(db: RDS, config: dict):
+    def get_instance(db: Sqlite, config: dict):
         '''
         args:
             config: {
@@ -360,6 +332,9 @@ class Sampler:
         assert isinstance(config.get('count'), int) and config['count'] > 0, \
             'sampler.count must be positive interger, not string'
 
+        if not hasattr(config, 'type'):
+            return RandomSampler(db, config)
+
         if config['type'] == 'random':
             return RandomSampler(db, config)
         elif config['type'] == 'head':
@@ -371,10 +346,10 @@ class Sampler:
     def key(self):
         return '{self._type}.{self.max_count}'.format(self=self)
 
-    def __init__(self, db: RDS, config: dict):
+    def __init__(self, db: Sqlite, config: dict):
         self.db = db
-        self._type = config['type']
-        self.max_count = config['count']
+        self._type = config.get('type') or ""
+        self.max_count = config.get('count') or 0
 
 
 class RandomSampler(Sampler):
@@ -387,7 +362,7 @@ class RandomSampler(Sampler):
         '''
         assert total_count > self.max_count, 'system error, total_count must be greater than sampler max_count'
 
-        table_name = RDS.escape(table_name)
+        table_name = Sqlite.escape(table_name)
 
         # step 1: try to get random self.max_count rows
         # 可以近似推导出当尝试取(2 * self.max_count + 16)行的时候取出来的行数有99.99%的概率(4个标准差)大于self.max_count行
@@ -400,7 +375,7 @@ class RandomSampler(Sampler):
         #   当 n -> ∞，可得解：k >= (2 + 16 / m)，即 mk >= 2m + 16
         mk = 2 * self.max_count + 16
         rand = (total_count - mk) / total_count  # rand < 0 is ok
-        sql = 'SELECT * FROM {table_name} WHERE rand() > {rand}'.format(table_name=table_name, rand=rand)
+        sql = 'SELECT * FROM {table_name} WHERE random() > {rand}'.format(table_name=table_name, rand=rand)
         sample = self.db.table_sql(sql, table_name)
         logger.debug('try to sample {mk} rows'.format(mk=mk))
         logger.debug('run sql:', sql)
@@ -424,5 +399,6 @@ class HeadSampler(Sampler):
         assert total_count > self.max_count, 'system error, total_count must be greater than sampler max_count'
 
         sample = self.db.select(table_name, num=self.max_count)
+
         row_count = len(sample)
         return 100.0 * row_count / total_count, row_count, sample
