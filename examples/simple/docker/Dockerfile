@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/medical-pub/ab-base:py37
+FROM cactusgame/ab-base:py37
 
 WORKDIR /root/app
 
