@@ -14,7 +14,7 @@ check_result()
 abt_build()
 {
   # 更新基础镜像
-  docker pull registry.cn-hangzhou.aliyuncs.com/medical-pub/ab-base:py37
+  docker pull cactusgame/ab-base:py37
 
   # 编译并指定docker的上下文
   if [ $use_cache = "false" ]; then

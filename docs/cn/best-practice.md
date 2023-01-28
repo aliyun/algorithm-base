@@ -8,7 +8,7 @@ pyab
 ```
 
 ## 如何断点调试ab服务
-![debug](./debug.jpg)
+![debug](debug.jpg)
 
 
 ## 如何修改服务端口

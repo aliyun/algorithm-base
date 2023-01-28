@@ -38,7 +38,7 @@ abt_build()
   fi
 
   # 更新基础镜像
-  docker pull registry.cn-hangzhou.aliyuncs.com/medical-pub/ab-base:py37
+  docker pull cactusgame/ab-base:py37
   rm -rf ./algorithms_tmp
 
   cp -r ./algorithms ./algorithms_tmp
@@ -112,7 +112,7 @@ abt_push()
 # 从配置中读取设置信息
 if test -f ./.ab ; then
   . ./.ab
-     
+
   if [ -n "$app_name" ]; then
     docker_name=$app_name
   fi
