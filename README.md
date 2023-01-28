@@ -116,12 +116,6 @@ The SLB binding succeeded, Access path http://somehost:someport,
   - [通过Jenkins构建镜像](docs/cn/jenkins.md)
   - [最佳实践](docs/cn/best-practice.md)
 
-## 视频专区
-- [什么是Algorithm-Base框架](https://www.bilibili.com/video/BV1FQ4y1q7Tq/) 
-- [基于AB框架的工作流](https://www.bilibili.com/video/BV1g3411y7TA/) 
-- [加密python文件](https://www.bilibili.com/video/BV1P3411y7Ms/) 
-- [加密数据文件](https://www.bilibili.com/video/BV1aq4y157rb/) 
-
 ## 贡献者
 AB框架由陈轩，贺澎旭，王鹏飞开发并维护
 
