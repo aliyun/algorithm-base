@@ -14,14 +14,6 @@ trusted-host = mirrors.aliyun.com
 
 ## 使用源代码安装(推荐)
 - 先clone AB框架源代码
-
-gitlab用户（内部）
-```
-git clone git@gitlab.alibaba-inc.com:medical-care/algorithm-base.git
-```
-
-github用户
-
 ```
 git clone https://github.com/aliyun/algorithm-base.git
 ```

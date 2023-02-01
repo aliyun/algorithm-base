@@ -1,3 +1,4 @@
+
 # Algorithm-Base框架: 让算法工程化更简单
 
 随着机器学习火遍全球，越来越多的算法服务被开发出来。在算法服务化的过程中，如果你也遇到过如下问题，AB框架或许正是你要找的轮子：
@@ -16,8 +17,27 @@ AB框架以极简的方式，为算法提供了端到端的工程化能力，覆
 
 我们用一个极简的例子，为你的`算法`构建镜像并发布服务。
 
-### 编写服务
-成功[安装](docs/cn/install.md)框架后，可以进入到`examples/simple`目录。这既是日后创建项目用的模板，也是我们的hello-world程序。  
+### 安装框架
+
+- 当前框架只支持Linux和X86架构的MacOS
+- 框架可以运行在python3.6+，建议使用miniconda
+
+安装minioconda
+```
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+sh Miniconda3-latest-Linux-x86_64.sh
+```
+
+创建虚拟环境
+```
+conda create -n ab python=3.7
+source activate ab
+```
+
+框架的安装步骤，详见[安装](docs/cn/install.md)
+
+### 编写hello world服务
+git clone代码后，进入到`examples/simple`目录。这既是日后创建项目用的模板，也是我们的hello-world程序。  
 
 你可以在simple项目的`algorithms`目录下实现你的算法，例子中提供了一个`demo.py`，其中实现了若干`算法`。如下代码，这段被`@algorithm`装饰器修饰的方法，是我们的加法算法。
 
@@ -35,6 +55,11 @@ def add(a: int, b: int) -> int:
     return a + b
 ```
 
+### 安装hello world服务的依赖
+在`examples/simple/setup/base.txt`中，存在几个必须要安装的依赖，才可以顺利运行hello world项目。  
+第一行的ab框架可以跳过，因为在第一步中，你已经安装过ab框架了。
+
+
 ### 启动服务并测试
 在`simple`根目录下，确保8000端口没有被占用，键入如下命令启动服务
 
@@ -42,7 +67,38 @@ def add(a: int, b: int) -> int:
 pyab
 ```
 
-服务成功启动后，你可以通过如下命令访问前面定义的接口
+服务成功启动后,看到类似如下输出，代表启动成功
+```
+[2023-02-01 13:07:33 +0800] [12257] [INFO] Starting gunicorn 20.0.4
+[2023-02-01 13:07:33 +0800] [12257] [DEBUG] Arbiter booted
+[2023-02-01 13:07:33 +0800] [12257] [INFO] Listening at: http://0.0.0.0:8000 (12257)
+[2023-02-01 13:07:33 +0800] [12257] [INFO] Using worker: sync
+[2023-02-01 13:07:33 +0800] [12267] [INFO] Booting worker with pid: 12267
+[2023-02-01 13:07:33] [12267] [INFO] global log level set to DEBUG
+[2023-02-01 13:07:33] [12267] [INFO] eureka not configured, ignore
+[2023-02-01 13:07:33] [12267] [INFO] no config.KERBEROS found, kerberos uninitialized
+[2023-02-01 13:07:33] [12267] [INFO] no config.SPARK found, spark uninitialized
+[2023-02-01 13:07:33] [12267] [INFO] model path is: /tmp/xxxx
+[2023-02-01 13:07:33 +0800] [12268] [INFO] Booting worker with pid: 12268
+[2023-02-01 13:07:33] [12268] [INFO] global log level set to DEBUG
+[2023-02-01 13:07:33] [12268] [INFO] eureka not configured, ignore
+[2023-02-01 13:07:33] [12268] [INFO] no config.KERBEROS found, kerberos uninitialized
+[2023-02-01 13:07:33] [12268] [INFO] no config.SPARK found, spark uninitialized
+[2023-02-01 13:07:33] [12268] [INFO] model path is: /tmp/xxxx
+[2023-02-01 13:07:33] [12267] [DEBUG] algorithms: {('add', 'python'): add(a: int, b: int) -> int,
+ ('compress', 'python'): compress() -> int,
+ ('crypto', 'python'): crypto(),
+ ('sync_logs', 'python'): sync_logs(path)}
+[2023-02-01 13:07:33] [12267] [DEBUG] fixtures: {}
+[2023-02-01 13:07:33 +0800] [12257] [DEBUG] 2 workers
+[2023-02-01 13:07:33] [12268] [DEBUG] algorithms: {('add', 'python'): add(a: int, b: int) -> int,
+ ('compress', 'python'): compress() -> int,
+ ('crypto', 'python'): crypto(),
+ ('sync_logs', 'python'): sync_logs(path)}
+[2023-02-01 13:07:33] [12268] [DEBUG] fixtures: {}
+```
+
+你可以通过如下命令访问前面定义的接口
 
 ```
 curl --location --request POST 'localhost:8000/api/algorithm/add' \

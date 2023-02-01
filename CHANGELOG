@@ -1,5 +1,8 @@
 # CHANGELOG
 
+#### v3.3.1.0
+feat: add py37-jdk8 version, with a jdk8 (instead of `default-jdk`) built in
+
 #### v3.3.0.0
 feat: `datasource` support sqlite3
 feat: you can define your `datasource` in request, decorator or config.
