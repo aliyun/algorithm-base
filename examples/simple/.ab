@@ -9,23 +9,23 @@ app_version=0.0.2
 sl_namespace=Default
 
 # [必填] 镜像仓库的地址
-acr_address=registry.<your-region>.aliyuncs.com
+acr_address=registry.your-region.aliyuncs.com
 
 # [必填] 镜像仓库的namespace
-acr_namespace=<your-docker-namespace>
+acr_namespace=your-docker-namespace
 
 # [必填] 在容器内部，应用的日志绝对路径
 log_path=/root/app/logs
 
-# [必填] 你的远端oss bukect名称。上传下载命令，会自动把指定的文件同步到这个bucket下。部署时，也会从这个bucket下自动挂载文件。
-oss_bucket=<your-oss-bucket>
+# [选填] 你的远端oss bukect名称。上传下载命令，会自动把指定的文件同步到这个bucket下。部署时，也会从这个bucket下自动挂载文件。如果不使用阿里云的OSS作为模型存储功能，可以不填。
+oss_bucket=
 
-# [必填] 部署到SAE时的vpc，交换机，slb，安全组信息
-vpc=<your-SAE-vpc-id>
-vsw=<your-vswitch-id>
-slb=<your-slb-id>
-sg=<your-security-group-id>
-slb_ip=<your-slb-ip>
+# [选填] 部署到SAE时的vpc，交换机，slb，安全组信息。如果不使用阿里云的serverless服务，可以不填
+vpc=
+vsw=
+slb=
+sg=
+slb_ip=
 
 # ================================================
 # ================================================
