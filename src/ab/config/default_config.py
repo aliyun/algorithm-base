@@ -2,10 +2,10 @@ import multiprocessing
 
 worker_class = "sync"
 
-preload_app = True
+preload_app = False
 
 # The maximum number of requests a worker will process before restarting.
-max_requests = 2000
+max_requests = 0
 # avoid all workers restarting at the same time
 max_requests_jitter = 200
 
@@ -56,7 +56,7 @@ NACOS_DEFAULT_HEART_BEAT_INTERVAL_SECONDS = 10
 
 
 # 是否开启存活检查
-ENABLE_LIVENESS_PROB = True
+ENABLE_LIVENESS_PROB = False
 LIVENESS_PROB = {
     # 容器启动后要等待多少秒后存活和就绪探测器才被初始化，最小值是 0。
     "initialDelaySeconds": 600,
