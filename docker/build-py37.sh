@@ -7,7 +7,7 @@ docker_version="py37"
 
 # ====== 需要定义的变量 =====
 # 定义docker的名字，必须是小写英文字母
-docker_full_name=registry.cn-hangzhou.aliyuncs.com/medical-pub/$docker_name
+docker_full_name=cactusgame/$docker_name
 # ====== 需要定义的变量 END =====
 
 # 编译并指定docker的上下文
