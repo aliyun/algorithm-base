@@ -115,13 +115,7 @@ class AlgorithmEncoder(json.JSONEncoder):
         # date is super class of datetime, so process later
         if isinstance(o, date):
             return str(o)
-        try:
-            from pyspark.sql import DataFrame as SparkDataFrame
-            if isinstance(o, SparkDataFrame):
-                # could be slow
-                return o.toPandas().to_dict('records')
-        except ImportError:
-            pass
+
         if isinstance(o, FileStorage):
             return 'file context not saved'
 

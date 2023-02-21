@@ -1,1 +1,0 @@
-SAVE_SPARK_LOG = True

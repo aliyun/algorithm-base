@@ -26,6 +26,11 @@ git clone https://github.com/aliyun/algorithm-base.git
 pip install -e .
 ```
 
+### 分支选择
+
+- 一般更新发布在`master`分支
+- 如果你非常在意构建镜像后的包大小，请移步`feat-slim`分支。该分支对基础镜像做了一些删减，同时移除了框架中不常用的功能
+
 ## 离线安装
 
 - 某些情况下，服务器无法连接到网络，可以先从能联网的机器上，下载指定tag的zip压缩包，然后通过pip离线安装

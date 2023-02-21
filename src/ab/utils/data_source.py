@@ -5,14 +5,13 @@ from ab.services import data_source as data_source_service
 from ab.utils import logger
 from ab.plugins.db.rds import RDS
 from ab.plugins.db.sqlite import Sqlite
-from ab.plugins.db.odps_helper import ODPS
 from ab.utils.prometheus import time_metrics
 from ab.plugins.cache.redis import cache_plugin
 
 
 class DataSource:
     '''
-    unique facade for rds/odps data_sources
+    unique facade for rds/data_sources
     '''
 
     @staticmethod
@@ -74,14 +73,6 @@ class DataSource:
         if _type in ('mysql', 'ads'):
             return RDS(data_source['host'], data_source['port'], data_source['db'],
                        data_source['username'], data_source['password'])
-        elif _type == 'odps':
-            return ODPS(data_source['access_id'], data_source['access_key'],
-                        data_source['project'], data_source['endpoint'],
-                        data_source.get('tunnel_endpoint'))
-        elif _type == 'hive':
-            from ab.plugins.db.hive import Hive
-            return Hive(data_source['host'], data_source['port'], data_source['db'],
-                        data_source['username'], data_source.get('password'))
         if _type in ('sqlite'):
             return Sqlite(data_source['db'])
         else:
@@ -132,22 +123,6 @@ class CachedDataSource(DataSource):
         elif self.type_ in ('sqlite'):
             self.table_key = 'sqlite://{}.{}.pickle'.format(db.db, table_name)
             self.cache_key = 'sqlite://{}.{}:{}.pickle'.format(db.db, table_name, db.sampler.key)
-        elif self.type_ == 'odps':
-            if partitions:
-                partitions = '|' + ','.join(partitions)
-            else:
-                partitions = ''
-            self.table_key = 'odps://{}/{}.{}.pickle'.format(db.endpoint, db.project, table_name)
-            self.cache_key = 'odps://{}/{}.{}{}:{}.pickle'.format(db.endpoint, db.project, table_name, partitions,
-                                                                  db.sampler.key)
-        elif self.type_ == 'hive':
-            if partitions:
-                partitions = '|' + ','.join(partitions)
-            else:
-                partitions = ''
-            self.table_key = 'hive://{}:{}/{}.{}.pickle'.format(db.host, db.port, db.db, table_name)
-            self.cache_key = 'hive://{}:{}/{}.{}{}:{}.pickle'.format(db.host, db.port, db.db, table_name, partitions,
-                                                                     db.sampler.key)
 
     def delete_table_cache(self):
         cache_client = cache_plugin.get_cache_client()
@@ -166,7 +141,6 @@ class CachedDataSource(DataSource):
         如果配置了redis，会使用redis做缓存
 
         注意：
-        odps里decimal类型的字段会读取为Decimal类型（df里显示为object），
         但to_msgpack无法dump decimal类型，需要手动转成float64，会造成精度丢失。
         如果确实需要精度，需自行实现取数据逻辑
         rds的decimal会自动读取成float64，无需处理，和网上查的不一样，不知道为什么。以防万一依然统一转化下

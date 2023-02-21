@@ -8,9 +8,7 @@ from ab.plugins.spring import eureka
 from ab.utils import logger, reflection, algorithm, fixture, env, \
     serializer
 from ab.plugins import kerberos
-from ab.plugins.storage import dfs
 from ab.plugins.db import db_master
-from ab.plugins.calculate import spark
 from ab.plugins.db import db_conn_pool
 from ab.utils.mixes import run_once
 from ab.utils.exceptions import ConfigException
@@ -127,8 +125,6 @@ class FlaskApp(Flask):
         env.init_env(self.config)
         eureka.init_eureka_registry_client(self.config)
         kerberos.init_kerberos(self.config)
-        spark.init_spark_builder(self.config)
-        dfs.init_dfs_client(self.config)
         algorithm.register_all_algorithms(self.config)
         fixture.register_all_fixtures(self.config)
         db_conn_pool.init_db(self.config)

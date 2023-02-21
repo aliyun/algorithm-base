@@ -1,0 +1,1 @@
+0 0 * * * /usr/sbin/logrotate -vf /etc/logrotate.d/gunicorn > /dev/null 2>&1 &

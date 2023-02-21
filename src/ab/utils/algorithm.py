@@ -69,7 +69,7 @@ def algorithm(name=None, engine='python', **kwargs):
     :param name: name of the algorithm. use func.__name__ if name is None
     :param engine: the engine that algorithm runs on
     """
-    assert engine in ['python', 'spark']
+    assert engine in ['python']
 
     def register_func(func):
         register_algorithm(name, engine, func, **kwargs)

@@ -8,10 +8,8 @@ from flask import Response
 from prometheus_client import Gauge
 
 from ab import app
-from ab.plugins.calculate import spark
 from ab.plugins.cache.redis import cache_plugin
 from ab.plugins.spring import eureka
-from ab.plugins.storage import dfs
 from ab.utils import logger, fixture
 from ab.utils.data_source import DataSource
 from ab.utils.algorithm import Algorithm
@@ -56,14 +54,12 @@ class Task:
         self.data_source = None
         self.engine = None
         self.algorithm = None
-        self.spark = None
         self.id = Task.get_next_id()
         self.request = request
         if 'args' in self.request:
             self.kwargs = self.request['args'].copy()
         else:
             self.kwargs = {}
-        # self.spark: SparkSession = None
         self.recorder = TaskRecorder.get_instance(task=self)
         self.recorder.init(self.kwargs)
 
@@ -73,16 +69,6 @@ class Task:
         """
         self.engine = Engine.get_instance(self.request.get('engine'))
         self.algorithm = Algorithm.get_instance(self.request['algorithm'], self.engine._type)
-
-        # update spark app id as early as possible
-        if 'spark' in self.algorithm.params:
-            try:
-                self.spark = self.kwargs['spark'] = spark.get_or_create()
-                self.recorder.update_spark_app_id(self.spark.sparkContext.applicationId)
-            except AttributeError:
-                if 'spark' not in self.algorithm.defaults_map:
-                    raise
-
         self.data_source = DataSource.get_instance(**self.request)
 
         if 'task_id' in self.algorithm.params:
@@ -110,9 +96,6 @@ class Task:
 
         if 'cache_client' in self.algorithm.params:
             self.kwargs['cache_client'] = cache_plugin.get_cache_client()
-
-        if 'dfs_client' in self.algorithm.params:
-            self.kwargs['dfs_client'] = dfs.get_instance()
 
         if 'eureka_client' in self.algorithm.params:
             self.kwargs['eureka_client'] = eureka.get_instance()

@@ -1,0 +1,5 @@
+account    sufficient	pam_access.so
+account    include	password-auth
+session    sufficient	pam_loginuid.so
+session    include	password-auth
+auth       include	password-auth

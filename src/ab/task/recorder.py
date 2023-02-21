@@ -39,8 +39,6 @@ class TaskRecorder:
         self.log('update_status:', status)
         return self.update({'code': code, 'status': status})
 
-    def update_spark_app_id(self, app_id):
-        return self.update({'spark_app_id': app_id})
 
     def concat_log(self, log: str, *args, **kwargs):
         # args && kwargs for print hook
@@ -78,9 +76,6 @@ class DummyTaskRecorder(TaskRecorder):
         pass
 
     def update(self, *args, **kwargs):
-        pass
-
-    def update_spark_app_id(self, *args, **kwargs):
         pass
 
 

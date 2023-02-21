@@ -170,7 +170,9 @@ The SLB binding succeeded, Access path http://somehost:someport,
   - [如何创建新项目](docs/cn/new-project.md)
   - [定制响应结构](docs/cn/custom-response-format.md)
   - [通过Jenkins构建镜像](docs/cn/jenkins.md)
-  - [最佳实践](docs/cn/best-practice.md)
+  - [最佳实践](docs/cn/best-practice.md)  
+  - [理解机器学习服务化中的gunicorn配置](https://zhuanlan.zhihu.com/p/371115835)
+  - [gunicorn worker timeout问题排查](https://zhuanlan.zhihu.com/p/370330463)
 
 ## 贡献者
 AB框架由陈轩，贺澎旭，王鹏飞开发并维护

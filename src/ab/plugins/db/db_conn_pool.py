@@ -119,9 +119,6 @@ def get_engine(db_config: str, echo=False, **kwargs):
         # FIXME: use the default QueuePool may cause some strange bugs in async mode
         new_engine = create_engine(db_config, echo=echo, echo_pool=echo,
                                    optimize_limits=True, poolclass=NullPool, **kwargs)
-    elif db_config.startswith('hive'):
-        # disable hive connection pool
-        new_engine = create_engine(db_config, echo=echo, echo_pool=echo, poolclass=NullPool, **kwargs)
     elif db_config.startswith('sqlite'):
         # TODO: sqlite can't use NullPoll in multi-process mode. perhaps a bug of sqlalchemy read/write lock
         new_engine = create_engine(db_config, echo=echo, echo_pool=echo, **kwargs)

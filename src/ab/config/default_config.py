@@ -36,9 +36,6 @@ REGISTER_AT_EUREKA = False
 
 CACHE_TIMEOUT = 1800  # seconds
 
-# TODO: -> SAMPLER_TIMEOUT
-HIVE_TIMEOUT = 120  # seconds
-
 SAMPLER = {'type': 'head', 'count': 100000}
 
 STATIC_FOLDER = 'static'
