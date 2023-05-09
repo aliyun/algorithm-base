@@ -11,7 +11,7 @@ abt encrypt -i crypto.py
 4. 编译docker linux环境的.so  
 4.1 在项目根目录下启动容器
 ```
-docker run -it -v `pwd`:/root/app registry.cn-hangzhou.aliyuncs.com/medical-care/simple:0.0.2
+docker run -it -v `pwd`:/root/app <your-image-host>/simple:0.0.2
 ```
 
 4.2 进入容器，进行编译.so  

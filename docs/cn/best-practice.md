@@ -72,8 +72,7 @@ docker run -p xxxx:80 your-image
 sh build.sh
 ```
 
-默认使用python3.7版本，如果必须使用其他python版本，请修改DOCKERFILE中的基础镜像，如
-FROM registry.cn-hangzhou.aliyuncs.com/medical-care/ab-base-36:latest
+默认使用python3.7版本，如果必须使用其他python版本，请修改DOCKERFILE中的基础镜像.
 
 
 ## 如何启动容器

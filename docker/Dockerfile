@@ -1,5 +1,5 @@
-FROM registry.cn-hangzhou.aliyuncs.com/medical-care/python:3.7.10-buster
-# FROM registry.cn-hangzhou.aliyuncs.com/medical-care/python:3.6.12-buster
+FROM python:3.7.10-buster
+# FROM python:3.6.12-buster
 
 ENV LANG C.UTF-8
 

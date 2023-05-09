@@ -52,7 +52,7 @@ docker run -v /etc:/mnt -v `pwd`/license.ab:/root/app/license.ab <your-image>
 
 例如，以下命令是我在本机调试框架和许可证功能时的启动命令,值得注意的是，在OSX系统中，/etc目录其实是/private/etc的链接
 ```
-docker run -p 8000:8000 -v /private/etc:/mnt:ro -v `pwd`:/root/app/  -v /Users/peng/Documents/project/algorithm-base/src/ab:/usr/local/lib/python3.7/site-packages/ab registry.cn-hangzhou.aliyuncs.com/medical-care/simple:0.0.2
+docker run -p 8000:8000 -v /private/etc:/mnt:ro -v `pwd`:/root/app/  -v /Users/peng/Documents/project/algorithm-base/src/ab:/usr/local/lib/python3.7/site-packages/ab <your-image-host>/simple:0.0.2
 ```
 
 ## 其他
