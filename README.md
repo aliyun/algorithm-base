@@ -172,8 +172,6 @@ The SLB binding succeeded, Access path http://somehost:someport,
   - [通过Jenkins构建镜像](docs/cn/jenkins.md)
   - [最佳实践](docs/cn/best-practice.md)
 
-## 贡献者
-AB框架由陈轩，贺澎旭，王鹏飞开发并维护
 
 
 
