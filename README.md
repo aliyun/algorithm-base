@@ -1,6 +1,6 @@
 # 迁移公告
 
-python3.7之后的版本，在[这里](https://github.com/cactusgame/python-fast-service)更新。新的版本主要支持较新的python，numpy，pandas等版本，另外，移除了不常用的数据源功能。
+python3.7之后的版本，在[这里](https://github.com/cactusgame/python-fast-service)更新。新的版本主要支持较新的python，numpy，pandas等版本，另外，移除了不常用的数据源功能。该版本主要用于[扫描仙人](https://secure-scanner.net/)等产品的基础框架。
 
 
 ---
